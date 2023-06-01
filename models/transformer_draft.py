@@ -132,11 +132,35 @@ class TransformerNet(nn.Module):
 
 
     def forward(self, x, return_last_dense=False):
+        # no encoding of the input is done for now.
+        
         # the model expects feature_engineer to have been run with channels_first=True, which means
         # the input is [batch, bands, times, bins].
         # Reshape to [times, batch, bands * bins] as needed for the transformer 
         x = x.permute(0, 2, 1, 3).contiguous()
         x = x.view(x.shape[1], x.shape[0], x.shape[2] * x.shape[3])
+
+        # print(x.shape) # [times, batch, bands * bins] = 32 * 64 * 288 (288 = 9 * 32)
+
+        # positional encoding
+
+        positions = torch.arange(0, x.shape[0]).unsqueeze(1) # print(positions.shape) # [times, 1] = 32 * 1
+
+        pe = torch.zeros((1, x.shape[0], x.shape[2])) 
+        # print(pe.shape)  # pe is a tensor of shape [1, times, bands * bins] = [1, 32, 288]
+
+        div_term = torch.exp(torch.arange(0, x.shape[2], 2) * -(math.log(10000.0) / x.shape[2]))
+        # print(div_term.shape) # [144] ??
+
+        pe[0, :, 0::2] = torch.sin(positions * div_term)
+        pe[0, :, 1::2] = torch.cos(positions * div_term)
+
+        # invert first and second dimension of pe
+        pe = pe.permute(1, 0, 2).contiguous() # [times, 1, bands * bins] = [32, 1, 288] 
+        
+        # some positional encoding to the input
+        x = x + pe # [32, 64, 288] + [32, 1, 288]
+
         encoded = self.transformer(x) # [times, batch, bands * bins] = 32 * 32 * 288 (288 = 9 * 32) 
         # Reshape to # [batch, times, bands * bins] as needed for the dense layers: [32, 32, 288] or [64, 32, 288] if batch size = 64
         encoded = encoded.view(x.shape[1], x.shape[0], x.shape[2])
