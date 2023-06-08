@@ -4,7 +4,7 @@
 </p>
 
 # Group 20: Seminar in Computer Vision by Deep Learning (CS4245) Project
-The project replicates and ablates on the results of the paper "Deep Gaussian Processes for Crop Yield Prediction Based on Remote Sensing Data" bt You et al. 
+The project replicates and ablates on the results of the paper "Deep Gaussian Processes for Crop Yield Prediction Based on Remote Sensing Data" bt You et al. [[paper](https://cs.stanford.edu/~ermon/papers/cropyield_AAAI17.pdf)]
 
 We replicate the original model's results first, then apply modifications by replacing the LSTM network with a Gated Recurrent Unit (GRU), additionally we replace the LSTM with an 'encoder only' transformer architecture. We conduct our tests using also Italian soybean yield data, additionally to the original study's U.S-based data. Our goal is to explore the model's performance and potential improvements in predicting crop yields using different architectures, and explore the transferability (and performance) of the model to different states.
 
