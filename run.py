@@ -368,6 +368,7 @@ class RunTask:
             sigma_b=sigma_b,
             device=device,
             patience=patience, # [CS4245]
+            batch_size=batch_size, # [CS4245]
         )
         model.run(
             histogram_path,
@@ -387,7 +388,8 @@ class RunTask:
     def train_transformer(
         cleaned_data_path="data/img_output",
         num_bins=32,
-        hidden_size=128,
+        hidden_size=1024,
+        embeddize_size=128,
         dropout_rate=0.75,
         num_heads=3, # [TODO]: Understand how to set this parameter
         dense_features=None,
@@ -479,6 +481,7 @@ class RunTask:
             in_channels=9,
             num_bins=num_bins,
             hidden_size=hidden_size,
+            embedding_size=embeddize_size,
             dropout_rate=dropout_rate,
             num_heads=num_heads,
             dense_features=dense_features,
@@ -492,6 +495,7 @@ class RunTask:
             sigma_b=sigma_b,
             device=device,
             patience=patience,
+            batch_size=batch_size,
         )
 
         model.run(

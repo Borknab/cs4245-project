@@ -13,7 +13,8 @@ class TransformerModel(ModelBase):
         self,
         in_channels=9,
         num_bins=32,
-        hidden_size=288,
+        hidden_size=1024,
+        embedding_size=128,
         dropout_rate=0.5,
         num_heads=3,
         dense_features=None,
@@ -27,12 +28,14 @@ class TransformerModel(ModelBase):
         sigma_b=0.01,
         device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
         patience=10,
+        batch_size=32,
     ):
 
         model = TransformerNet(
             in_channels=in_channels,
             num_bins=num_bins,
             hidden_size=hidden_size,
+            embedding_size=embedding_size,
             num_encoders=num_encoders,
             num_heads=num_heads,
             dropout_rate=dropout_rate,
@@ -52,11 +55,13 @@ class TransformerModel(ModelBase):
         hyperparameters_df = pd.DataFrame(
             {
                 "hidden_size": hidden_size,
+                "embedding_size": embedding_size,
                 "dropout_rate": dropout_rate,
                 "num_dense_layers": num_dense_layers,
                 "num_encoders": num_encoders,
                 "num_heads": num_heads,
                 "patience": patience,
+                "batch_size": batch_size,
             },
             index=[0],
         )
@@ -87,7 +92,8 @@ class TransformerNet(nn.Module):
         self,
         in_channels=9,
         num_bins=32,
-        hidden_size=1024, # not used currently
+        hidden_size=1024,
+        embedding_size=128,
         num_encoders=5,
         num_heads=3,
         dropout_rate=0.75,
@@ -101,10 +107,12 @@ class TransformerNet(nn.Module):
             dense_features = [in_channels*num_bins, 1]
         dense_features.insert(0, in_channels*num_bins)
 
+        
+        self.embedding = nn.Linear(in_channels*num_bins, embedding_size)
+
         self.dropout = nn.Dropout(dropout_rate)
-        encoder_layer = nn.TransformerEncoderLayer(d_model=in_channels*num_bins, nhead=num_heads, dim_feedforward=1024, dropout=dropout_rate, batch_first=True)
+        encoder_layer = nn.TransformerEncoderLayer(d_model=in_channels*num_bins, nhead=num_heads, dim_feedforward=hidden_size, dropout=dropout_rate, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_encoders)
-        self.hidden_size = in_channels*num_bins
         
         self.dense_layers = nn.ModuleList(
             [
@@ -133,6 +141,9 @@ class TransformerNet(nn.Module):
         x = x.to(self.device)
         x = x.permute(0, 2, 1, 3).contiguous()
         x = x.view(x.shape[0], x.shape[1], x.shape[2] * x.shape[3])
+
+        # Apply embedding
+        x = self.embedding(x)
 
         positions = torch.arange(0, x.shape[1]).unsqueeze(1)
         pe = torch.zeros((1, x.shape[1], x.shape[2])).to(self.device)

@@ -51,6 +51,7 @@ class RNNModel(ModelBase):
         sigma_b=0.01,
         device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
         patience=10, # [CS4245]
+        batch_size=32, # [CS4245]
     ):
         num_rnn_layers=1 # [CS4245]
         model = RNNet(
@@ -77,6 +78,7 @@ class RNNModel(ModelBase):
                 "num_dense_layers": num_dense_layers,
                 "num_rnn_layers": num_rnn_layers,
                 "patience": patience,
+                "batch_size": batch_size,
             },
             index=[0],
         )
