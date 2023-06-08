@@ -23,6 +23,20 @@ def plot_county_errors(model, svg_file=Path("data/counties.svg"), save_colorbar=
     """
 
     model_sd = torch.load(model, map_location="cpu")
+    
+    ### [CS4245] ###
+    # plot loss curve
+    plt.plot(model_sd['epoch_train_loss'], label='train') #
+    plt.plot(model_sd['epoch_val_loss'], label='val')
+    plt.xlabel('epoch')
+    plt.ylabel('loss')
+    plt.title('loss curve')
+    plt.legend()
+    plt.savefig(model.parents[0] / 'loss_curve.png')
+    plt.close()
+
+    ################
+
 
     model_dir = model.parents[0]
 
@@ -38,6 +52,7 @@ def plot_county_errors(model, svg_file=Path("data/counties.svg"), save_colorbar=
     indices = model_sd["test_indices"]
 
     pred_err = pred_values - real_values
+    print("NN error mean: ", pred_err.mean()) # [CS4245]
     pred_dict = {}
     for idx, err in zip(indices, pred_err):
         state, county = idx
@@ -66,6 +81,7 @@ def plot_county_errors(model, svg_file=Path("data/counties.svg"), save_colorbar=
 
     if gp:
         gp_pred_err = gp_values - real_values
+        print("GP error mean: ", gp_pred_err.mean()) # [CS4245]
         gp_dict = {}
         for idx, err in zip(indices, gp_pred_err):
             state, county = idx
