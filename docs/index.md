@@ -37,6 +37,13 @@ Our encoder-only Transformer model is made of several components. First, an embe
 <p align="justify">
 The architecture is highly configurable, allowing us to easily adjust and test key parameters as for instance the number of attention heads and encoder layers. Through experimentation, we found that due to the limited complexity of the input data, a low dropout rate, fewer heads and encoder layers, and a small hidden size yielded the best performance. More on this in the "Result" section.
 </p>
+
+<p align="center">
+  <br><br>
+  <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/encoder-only-architecture.png?token=GHSAT0AAAAAACA5WRYMV2U5HMHA32NTAWGCZECL7HQ"/><br>
+  <br><br>
+</p>
+
   
 ### GRU
 <p align="justify">
