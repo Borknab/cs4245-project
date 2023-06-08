@@ -16,6 +16,10 @@ In addition to that, the authors propose an innovative dimensionality reduction 
 Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The model proposed outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE). With slighly better performance for the 3D CNN architecture compared to the LSTM model.
 </p>
 
+<p align="justify">
+Our work focused on first reproducing the results obtained by the authors, using the codebase available at [this](https://github.com/gabrieltseng/pycrop-yield-prediction) github repository, to validate the claims made in the paper. We then expanded on this by experimenting with a Gated Recurrent Unit (GRU) model, on the hypothesis that it could be particularly effective with limited training data. Alongside this, we tested an encoder-only Transformer architecture, given the remarkable performance shown by transformers in modeling long-term dependencies (also) through the self-attention mechanisms. Finally, we aimed to assess the model's transferability and robustness by applying it to a new geography: soybean production in Italy, to verify whether the model can be trained on a country where labeled data is abundant and then be used to predict crop yield in countries where crop yield data is more scarce.
+</p>
+
 ## Implementation
 
 ## Results
