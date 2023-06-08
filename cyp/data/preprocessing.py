@@ -1,6 +1,6 @@
 from pathlib import Path
 import numpy as np
-import gdal
+from osgeo import gdal # [CS4245]
 import math
 from itertools import repeat
 from concurrent.futures import ProcessPoolExecutor
