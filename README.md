@@ -9,8 +9,6 @@ The project aims at...
 We utilized the code available at [this](https://github.com/gabrieltseng/pycrop-yield-prediction) Github repo, in this repo only the source code is available, check the original codebase for all the additional folders and files. We tagged with `[CS4245]` all the changes we made to the original code.
 
 The main goals of our project are:
-- 
-
 
 For more information, check the full blog post at: https://borknab.github.io/cs4245-project/
 
