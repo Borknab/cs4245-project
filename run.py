@@ -367,6 +367,7 @@ class RunTask:
             sigma_e=sigma_e,
             sigma_b=sigma_b,
             device=device,
+            patience=patience, # [CS4245]
         )
         model.run(
             histogram_path,
