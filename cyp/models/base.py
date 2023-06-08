@@ -31,6 +31,7 @@ class ModelBase:
         sigma_e=0.32,
         sigma_b=0.01,
         device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
+        hyperparameters_df=None, # [CS4245]
     ):
         self.savedir = savedir / model_type
         self.savedir.mkdir(parents=True, exist_ok=True)
@@ -44,6 +45,7 @@ class ModelBase:
         self.model_bias = model_bias
 
         self.device = device
+        self.hyperparameters_df = hyperparameters_df # [CS4245]
 
         # for reproducability
         torch.manual_seed(42)
@@ -121,14 +123,19 @@ class ModelBase:
         else:
             times = range(10, 31, 4)
 
+        ### [CS4245] ###
+        training_times_list = []
+        epochs_list = []  
+        ################
+
         for pred_year in pred_years:
             for run_number in range(1, num_runs + 1):
                 for time in times:
                     print(
                         f"Training to predict on {pred_year}, Run number {run_number}"
                     )
-
-                    results = self._run_1_year(
+                    
+                    results, training_time, num_epoch_run = self._run_1_year( # [CS4245]
                         images,
                         yields,
                         years,
@@ -148,6 +155,10 @@ class ModelBase:
                     years_list.append(pred_year)
                     run_numbers.append(run_number)
                     times_list.append(time)
+                    ### [CS4245] ###
+                    training_times_list.append(training_time) 
+                    epochs_list.append(num_epoch_run)
+                    ################
 
                     if self.gp is not None:
                         rmse, me, rmse_gp, me_gp = results
@@ -167,12 +178,53 @@ class ModelBase:
             "RMSE": rmse_list,
             "ME": me_list,
         }
+
+
         if self.gp is not None:
             data["RMSE_GP"] = rmse_gp_list
             data["ME_GP"] = me_gp_list
         results_df = pd.DataFrame(data=data)
-        results_df.to_csv(self.savedir / f"{str(datetime.now())}.csv", index=False)
 
+        ### [CS4245] ###
+        # add training time and number of epochs to the results dataframe
+        results_df["training_time (s)"] = training_times_list
+        results_df["num_epochs"] = epochs_list
+
+
+        # add hyperparameters to the results dataframe
+        # F:
+        if self.hyperparameters_df is not None:
+            results_df = pd.concat([results_df, self.hyperparameters_df], axis=1)
+
+        
+        # F:
+        average_values = {
+            "RMSE_avg": results_df["RMSE"].mean(),
+            "ME_avg": results_df["ME"].mean(),
+            "RMSE_GP_avg": results_df["RMSE_GP"].mean(),
+            "ME_GP_avg": results_df["ME_GP"].mean(),
+        }
+        
+        results_df = results_df.append(average_values, ignore_index=True)
+
+        
+
+
+        # F:
+        # write hyperparameters in the title and also time stamp
+        title = "_".join(
+            [
+                f"{key}={val}"
+                for key, val in self.hyperparameters_df.iloc[0].to_dict().items()
+            ]
+        )
+
+        # add the RMSE_GP_avg at the beginning of the title : "RMSE_GP_avg=0.123_..."
+        title = f"RMSE_GP_avg={average_values['RMSE_GP_avg']}_" + title
+
+
+        results_df.to_csv(self.savedir / f"{title}_{datetime.now()}.csv", index=False)
+        ################
     def _run_1_year(
         self,
         images,
@@ -202,7 +254,8 @@ class ModelBase:
         # times in one call to run()
         self.reinitialize_model(time=time)
 
-        train_scores, val_scores = self._train(
+        
+        train_scores, val_scores, epoch_train_scores, epoch_val_scores, training_time, num_epochs = self._train( # [CS4245]
             train_data.images,
             train_data.yields,
             train_steps,
@@ -219,6 +272,8 @@ class ModelBase:
             "state_dict": self.model.state_dict(),
             "val_loss": val_scores["loss"],
             "train_loss": train_scores["loss"],
+            "epoch_train_loss": epoch_train_scores, # [CS4245] 
+            "epoch_val_loss": epoch_val_scores, # [CS4245]
         }
         for key in results:
             model_information[key] = results[key]
@@ -233,6 +288,9 @@ class ModelBase:
         model_information["model_weight"] = model_weight.numpy()
         model_information["model_bias"] = model_bias.numpy()
 
+        model_information["training_time"] = training_time # [CS4245]
+        model_information["num_epochs"] = num_epochs # [CS4245]
+        
         if self.gp is not None:
             print("Running Gaussian Process!")
             gp_pred = self.gp.run(
@@ -254,7 +312,7 @@ class ModelBase:
             model_information["test_real"],
             model_information["test_pred"],
             model_information["test_pred_gp"] if self.gp is not None else None,
-        )
+        ), training_time, num_epochs
 
     def _train(
         self,
@@ -300,12 +358,22 @@ class ModelBase:
         train_scores = defaultdict(list)
         val_scores = defaultdict(list)
 
+        ### [CS4245] ###
+        epoch_train_scores = []
+        epoch_val_scores = []
+        ################
+
         step_number = 0
         min_loss = np.inf
         best_state = self.model.state_dict()
 
         if patience is not None:
             epochs_without_improvement = 0
+
+        ### [CS4245] ###
+        # Compute training time
+        start_time = datetime.now()
+        ################
 
         for epoch in range(num_epochs):
             self.model.train()
@@ -331,7 +399,10 @@ class ModelBase:
                 if step_number in [4000, 20000]:
                     for param_group in optimizer.param_groups:
                         param_group["lr"] /= 10
-
+            ### [CS4245] ###
+            avg_train_loss = np.mean(train_scores["loss"][-len(train_dataloader):])
+            epoch_train_scores.append(avg_train_loss)
+            ################
             train_output_strings = []
             for key, val in running_train_scores.items():
                 train_output_strings.append(
@@ -352,6 +423,10 @@ class ModelBase:
                     )
 
                     val_scores["loss"].append(val_loss.item())
+            ### [CS4245] ###
+            avg_val_loss = np.mean(val_scores["loss"][-len(val_dataloader):])
+            epoch_val_scores.append(avg_val_loss)
+            ################
 
             val_output_strings = []
             for key, val in running_val_scores.items():
@@ -378,9 +453,20 @@ class ModelBase:
                     self.model.load_state_dict(best_state)
                     print("Early stopping!")
                     break
+        
+        ### [CS4245] ###
+        # Find how many epochs were run
+        num_epochs = len(epoch_train_scores)
+
+        # F:
+        # Compute training time
+        end_time = datetime.now()
+        training_time = end_time - start_time
+        training_time = training_time.seconds()
+        ################
 
         self.model.load_state_dict(best_state)
-        return train_scores, val_scores
+        return train_scores, val_scores, epoch_train_scores, epoch_val_scores, training_time, num_epochs # [CS4245]
 
     def _predict(
         self,

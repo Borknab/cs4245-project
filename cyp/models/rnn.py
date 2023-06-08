@@ -3,6 +3,7 @@ import torch
 
 import math
 from pathlib import Path
+import pandas as pd # [CS4245]
 
 from .base import ModelBase
 
@@ -49,13 +50,14 @@ class RNNModel(ModelBase):
         sigma_e=0.01,
         sigma_b=0.01,
         device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
+        patience=10, # [CS4245]
     ):
-
+        num_rnn_layers=1 # [CS4245]
         model = RNNet(
             in_channels=in_channels,
             num_bins=num_bins,
             hidden_size=hidden_size,
-            num_rnn_layers=1,
+            num_rnn_layers=num_rnn_layers, # [CS4245]
             rnn_dropout=rnn_dropout,
             dense_features=dense_features,
         )
@@ -66,6 +68,19 @@ class RNNModel(ModelBase):
             num_dense_layers = len(dense_features)
         model_weight = f"dense_layers.{num_dense_layers - 1}.weight"
         model_bias = f"dense_layers.{num_dense_layers - 1}.bias"
+
+        ### [CS4245] ###
+        hyperparameters_df = pd.DataFrame(
+            {
+                "hidden_size": hidden_size,
+                "rnn_dropout": rnn_dropout,
+                "num_dense_layers": num_dense_layers,
+                "num_rnn_layers": num_rnn_layers,
+                "patience": patience,
+            },
+            index=[0],
+        )
+        ################
 
         super().__init__(
             model,
@@ -80,6 +95,7 @@ class RNNModel(ModelBase):
             sigma_e,
             sigma_b,
             device,
+            hyperparameters_df # [CS4245]
         )
 
     def reinitialize_model(self, time=None):
