@@ -4,11 +4,11 @@
 </p>
 
 # Group 20: Seminar in Computer Vision by Deep Learning (CS4245) Project
-The project aims at... 
+The project replicates and ablates on the results of the paper "Deep Gaussian Processes for Crop Yield Prediction Based on Remote Sensing Data" bt You et al. 
 
-We utilized the code available at [this](https://github.com/gabrieltseng/pycrop-yield-prediction) Github repo, in this repo only the source code is available, check the original codebase for all the additional folders and files. We tagged with `[CS4245]` all the changes we made to the original code.
+We replicate the original model's results first, then apply modifications by replacing the LSTM network with a Gated Recurrent Unit (GRU), additionally we replace the LSTM with an 'encoder only' transformer architecture. We conduct our tests using also Italian soybean yield data, additionally to the original study's U.S-based data. Our goal is to explore the model's performance and potential improvements in predicting crop yields using different architectures, and explore the transferability (and performance) of the model to different states.
 
-The main goals of our project are:
+We utilized the code available at [this](https://github.com/gabrieltseng/pycrop-yield-prediction) Github repo, in our repository only the source code is available (`cyp` folder), check the original codebase for all the additional folders and files. We tagged with `[CS4245]` all the changes we made to the original code.
 
 For more information, check the full blog post at: https://borknab.github.io/cs4245-project/
 
