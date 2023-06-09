@@ -22,19 +22,20 @@ Our work focused on first reproducing the results obtained by the authors, using
 
 ## Implementation
 ### Results validation/reproduction
-#### Draft (need to be changed a bit)
 <p align="justify">
-In our attempt to reproduce the results presented in the paper, we were fortunate enough to have access to the original codebase, courtesy of the authors, hosted on GitHub. Given that we had this resource, our main objective was not mere reproduction, but to perform ablations and further analyses to understand the underlying intricacies and performance factors of the model. Nevertheless, our initial step was to verify the reported results by retraining the models as a means of validation.
+In our attempt to reproduce the results presented in the paper, the first step was collecting the training data, comprising multispectral US-based satellite images, which were retrieved from the Google Earth Engine API. These data, amassing to over 100GB of .tif files, included the images, the masks for distinguishing farmland areas, and other .tif files providing information on the temperature encapsulated in the satellite images.
+</p>
+
+<i>??? Should we discuss in more detail the steps before training (export, preprocess, engineer) and maybe also the satellite images which satellite, which info...???</i>
+
+<p align="justify">
+Considering the sheer volume of data, storing it locally was not a feasible option. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing these cloud services made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
 </p>
 <p align="justify">
-The training data, comprising multispectral satellite images, were procured from the Google Earth Engine API. These data, amassing to over 100GB of .tif files, included images, masks for distinguishing farmland areas, and ancillary files providing information on the temperature encapsulated in the satellite images.
+To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders from the GitHub repository to our shared Drive, which we then accessed from Colab. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The code we implemented on Colab was essentially analogous to the run.py file in the repository, with the addition of the training functions for the models we implemented ourselves - GRU and Tranformer. 
+Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
 </p>
-<p align="justify">
-Considering the sheer volume of data, local storage wasn't a feasible option. We leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing these cloud services facilitated a convenient collaboration as we could share folders, avoid local storage, and exploit the GPU resources provided by Colab for training the models at no extra cost.
-</p>
-<p align="justify">
-To adapt the code to run on Colab, we imported the 'cyp' and 'data' folders from the GitHub repository to our shared Drive. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The primary code we executed on Colab was essentially analogous to the run.py file in the repository. Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
-</p>
+
 
 ### Tranformer architecture
 <p align="justify">
