@@ -56,9 +56,10 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 
 <p align="center">
   <br><br>
-  <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/encoder-only-architecture.png?token=GHSAT0AAAAAACA5WRYNIOHED4XXILENPUPQZEC4GAA"/><br>
+  <img src="https://github.com/Borknab/cs4245-project/blob/main/Images/encoder-only-architecture.png"/><br>
   <br><br>
 </p>
+
 
   
 ### GRU
