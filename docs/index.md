@@ -11,7 +11,7 @@ This blog post presents the results of our reproduction and analysis of the pape
 </p>
 
 <p align="justify">
-In the paper, the authors tackle a pressing global issue - accurately predicting crop yields before harvest, which is vital for food security, especially in developing countries. They introduce a scalable, accurate, and inexpensive method that significantly improves upon traditional techniques utilizing only remote sensing data (i.e. multispectral satellite images). Contrarily to previous approaches that required the use of hand-crafted features, the authors leverage advanced representation learning to let the deep learning model learn the features by itself. Moreover, differently from previous methods, the approach utilized in the paper is particurarly inexpensive as it does not rely on variables related to crop growth (such as local weather and soil properties) to model crop yield, which are often imprecise or lacking in developing countries where reliable yield predictions are most needed, instead, only worldwide available and freely accessible remote sensing data are used.
+In the paper, the authors tackle a pressing global issue - accurately predicting crop yields before harvest, which is vital for food security, especially in developing countries. They introduce a scalable, accurate, and inexpensive method that significantly improves upon traditional techniques utilizing only remote sensing data (i.e. multispectral satellite images). Contrarily to previous approaches that required the use of hand-crafted features, the authors leverage advanced representation learning to let the deep learning model learn the features by itself. Moreover, differently from previous methods, the approach utilized in the paper is particurarly inexpensive as it does not rely on variables related to crop growth (i.e. local weather and soil properties) to model crop yield, which are often imprecise or lacking in developing countries where reliable yield predictions are most needed, instead, only worldwide available and freely accessible remote sensing data are used.
 In addition to that, the authors propose an innovative dimensionality reduction technique by representing the raw multispectral satellite images as histograms of color pixel counts (using a mean-field approximation to achieve tractability), which makes it possible to train even when training data is scarce. Deep learning model (i.e. 3D-CNNs and LSTMs) are then trained on these histograms to predict crop yields.
 Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The model proposed outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE). With slighly better performance for the 3D CNN architecture compared to the LSTM model.
 </p>
@@ -21,9 +21,14 @@ Our work focused on first reproducing the results obtained by the authors, using
 </p>
 
 ## Implementation
+### Results validation/reproduction
+<p align="justify">
+<i>...Write about already implmeented paper repo in pytorch, write about need to store 100+ gb locally, so we opted for colab and folder sharings with drive premium, write about colab setup (conda env) and earth engine api...</i>
+</p>
+
 ### Tranformer architecture
 <p align="justify">
-For the implementation of the Transformer model, we chose an encoder-only architecture, given that our task is sequence-to-number (i.e. the regression task of predicting the annual crop yield from the sequences of histograms representing the satellite images over the months), rather than sequence-to-sequence.
+For the implementation of the Transformer model, we chose an encoder-only architecture, given that our task is a many-to-one, namely a sequence-to-number (i.e. the regression task of predicting the annual crop yield from the sequences of histograms representing the satellite images over the months), rather than sequence-to-sequence.
 </p>
 <p align="justify">
 Our initial approach was to manually construct it from scratch by implementing all the necessary layers (i.e. self-attention, normalization..) to make the model highly customizable. However, this proved to be challenging and time-consuming, thus we resorted to utilizing PyTorch's built-in classes, namely <i><b>TransformerEncoderLayer</b></i> and <i><b>TransformerEncoder</b></i>. 
@@ -40,7 +45,7 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 
 <p align="center">
   <br><br>
-  <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/encoder-only-architecture.png?token=GHSAT0AAAAAACA5WRYMV2U5HMHA32NTAWGCZECL7HQ"/><br>
+  <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/encoder-only-architecture.png?token=GHSAT0AAAAAACA5WRYNIOHED4XXILENPUPQZEC4GAA"/><br>
   <br><br>
 </p>
 
