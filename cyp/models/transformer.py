@@ -29,6 +29,8 @@ class TransformerModel(ModelBase):
         device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
         patience=10,
         batch_size=32,
+        starter_learning_rate=1e-3,
+        weight_decay=0,
     ):
 
         model = TransformerNet(
@@ -62,6 +64,8 @@ class TransformerModel(ModelBase):
                 "num_heads": num_heads,
                 "patience": patience,
                 "batch_size": batch_size,
+                "starter_learning_rate": starter_learning_rate,
+                "weight_decay": weight_decay,
             },
             index=[0],
         )
@@ -104,14 +108,14 @@ class TransformerNet(nn.Module):
         super().__init__()
         
         if dense_features is None:
-            dense_features = [in_channels*num_bins, 1]
-        dense_features.insert(0, in_channels*num_bins)
+            dense_features = [128, 1]
+        dense_features.insert(0, embedding_size)
 
         
         self.embedding = nn.Linear(in_channels*num_bins, embedding_size)
 
         self.dropout = nn.Dropout(dropout_rate)
-        encoder_layer = nn.TransformerEncoderLayer(d_model=in_channels*num_bins, nhead=num_heads, dim_feedforward=hidden_size, dropout=dropout_rate, batch_first=True)
+        encoder_layer = nn.TransformerEncoderLayer(d_model=embedding_size, nhead=num_heads, dim_feedforward=hidden_size, dropout=dropout_rate, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_encoders)
         
         self.dense_layers = nn.ModuleList(
@@ -134,7 +138,7 @@ class TransformerNet(nn.Module):
         self.initialize_weights()
 
         # Add an attention pooling layer
-        self.attention_pool = AttentionPool(in_channels*num_bins)
+        self.attention_pool = AttentionPool(embedding_size)
 
 
     def forward(self, x, return_last_dense=False):
@@ -167,6 +171,7 @@ class TransformerNet(nn.Module):
             encoded = layer(encoded)
         if return_last_dense:
             return encoded, input_encoded
+
         return encoded
     
 

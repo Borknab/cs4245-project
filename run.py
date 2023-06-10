@@ -496,9 +496,11 @@ class RunTask:
             device=device,
             patience=patience,
             batch_size=batch_size,
+            starter_learning_rate=starter_learning_rate,
+            weight_decay=weight_decay,
         )
 
-        model.run(
+        rmse_gp_avg = model.run(
             histogram_path,
             times,
             pred_years,
@@ -510,6 +512,8 @@ class RunTask:
             l1_weight,
             patience,
         )
+
+        return rmse_gp_avg
     ################
 
 if __name__ == "__main__":
