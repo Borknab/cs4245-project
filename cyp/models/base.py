@@ -200,10 +200,12 @@ class ModelBase:
         # F:
         average_values = {
             "RMSE_avg": results_df["RMSE"].mean(),
-            "ME_avg": results_df["ME"].mean(),
-            "RMSE_GP_avg": results_df["RMSE_GP"].mean(),
-            "ME_GP_avg": results_df["ME_GP"].mean(),
+            "ME_avg": results_df["ME"].mean()
         }
+
+        if self.gp is not None:
+          average_values["RMSE_GP_avg"] = results_df["RMSE_GP"].mean(),
+          average_values["ME_GP_avg"] = results_df["ME_GP"].mean(),
         
         results_df = results_df.append(average_values, ignore_index=True)
 
@@ -217,14 +219,23 @@ class ModelBase:
                 f"{key}={val}"
                 for key, val in self.hyperparameters_df.iloc[0].to_dict().items()
             ]
-        )
-
-        # add the RMSE_GP_avg at the beginning of the title : "RMSE_GP_avg=0.123_..."
-        title = f"RMSE_GP_avg={average_values['RMSE_GP_avg']}_" + title
+        ### [CS4245] ###
+        if self.gp is not None:
+          # add the RMSE_GP_avg at the beginning of the title : "RMSE_GP_avg=0.123_..."
+          title = f"RMSE_GP_avg={average_values['RMSE_GP_avg']}_" + title
+        else:
+          title = f"RMSE_avg={average_values['RMSE_avg']}_" + title
 
 
         results_df.to_csv(self.savedir / f"{title}_{datetime.now()}.csv", index=False)
-        ################
+        
+        # return RMSE_GP_avg loss 
+        if self.gp is not None:
+          return average_values["RMSE_GP_avg"]
+        else:
+          return average_values["RMSE_avg"]
+        
+        ###############
     def _run_1_year(
         self,
         images,
