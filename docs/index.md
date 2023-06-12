@@ -12,7 +12,7 @@ This blog post presents the results of our reproduction and analysis of the pape
 
 <p align="justify">
 In the paper, the authors tackle a pressing global issue - accurately predicting crop yields before harvest, which is vital for food security, especially in developing countries. They introduce a scalable, accurate, and inexpensive method that significantly improves upon traditional techniques, the newly proposed method utilizes only remote sensing data (i.e. multispectral satellite images). Contrarily to previous approaches that required the use of hand-crafted features (i.e. vegetation indexes), the authors leverage advanced representation learning to let the deep learning model learn the features by itself. Moreover, differently from previous methods, the approach utilized in the paper is particurarly inexpensive as it does not rely on variables related to crop growth (i.e. local weather and soil properties) to model crop yield, which are often imprecise or lacking in developing countries where reliable yield predictions are most needed, instead, only worldwide available and freely accessible remote sensing data are used.
-In addition to that, the authors propose an innovative dimensionality reduction technique by representing the raw multispectral satellite images as histograms of color pixel counts (using a mean-field approximation to achieve tractability), which makes it possible to train even when training data is scarce. Deep learning model (i.e. 3D-CNNs and LSTMs) are then trained on these histograms to predict crop yields.
+In addition to that, the authors propose an innovative dimensionality reduction technique by representing the raw multispectral satellite images as histograms of color pixel counts (using a mean-field approximation to achieve tractability), which makes it possible to train even when training data is scarce. Deep learning models (i.e. 3D-CNNs and LSTMs) are then trained on these histograms to predict crop yields.
 Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The model proposed outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE). With slighly better performance for the 3D CNN architecture compared to the LSTM model.
 </p>
 
@@ -36,8 +36,26 @@ To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders 
 Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
 </p>
 
+### GRU Architecture
 
-### Tranformer architecture
+<p align="justify">
+The implementation of the GRU model is similar to the existing implementation of the LSTM model, without a cell state. The three parts of the GRU model are the GRU cells themselves, the dropout, which is applied at every sequence step, and the dense network which outputs the final predictions.
+</p>
+
+<p align="justify">
+The following describes the GRU architecture. Note that every timestep of the GRU cell sequence processing applies dropout individually. This mirrors the way the DropoutWrapper class is used in the original paper
+</p>
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/gru_architecture.png"/><br>
+    <p align="center">Figure 1: The GRU architecture</p>
+</p>
+
+<p align="justify">
+The reason for testing a GRU based network is because it has the potential to outperform an LSTM based network in certain scenarios. This is because a GRU is a simpler architecture. A GRU has two gates, update and reset, which control the flow of information. Therefore GRUs can be computationally more efficient and easier to train. Therefore GRUs exhibit better performance on tasks that require modeling short-term dependencies. Due to having fewer parameters, GRUs can capture important patterns in data quicker, enabling faster learning and better generalization.
+</p>
+
+### Tranformer Architecture
 <p align="justify">
 For the implementation of the Transformer model, we chose an encoder-only architecture, given that our task is a many-to-one, namely a sequence-to-number (i.e. the regression task of predicting the annual crop yield from the sequences of histograms representing the satellite images over the months), rather than sequence-to-sequence.
 </p>
@@ -59,12 +77,6 @@ The architecture is highly configurable, allowing us to easily adjust and test k
     <p align="center">Figure 1: The encoder-only transformer architecture.</p>
 </p>
 
-
-  
-### GRU
-<p align="justify">
-...
-</p>
   
 ### New dataset: Soybean in Italy
 <p align="justify">
@@ -72,6 +84,20 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 </p>
   
 ## Results
+
+To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and ropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
+
+| Year | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
+|------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
+| 2009 | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2010 | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2011 | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2012 | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2013 | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2014 | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2015 | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+
+
 
 ## Discussion and Conclusion
 
