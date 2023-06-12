@@ -73,6 +73,27 @@ The architecture is highly configurable, allowing us to easily adjust and test k
   
 ## Results
 
+### Tranformer architecture
+<p align="justify">
+...
+</p>
+
+### GRU
+<p align="justify">
+...
+</p>
+
+### New dataset: Soybean in Italy
+<p align="justify">
+...
+</p>
+
 ## Discussion and Conclusion
+<p align="justify">
+...
+</p>
 
 ## References
+<p align="justify">
+[1] You, J., Li, X., Low, M., Lobell, D., & Ermon, S. (2017, February). Deep gaussian process for crop yield prediction based on remote sensing data. In Proceedings of the AAAI conference on artificial intelligence (Vol. 31, No. 1).
+</p>
