@@ -165,10 +165,14 @@ class TransformerNet(nn.Module):
 
         # attention pool over time dimension
         encoded = self.attention_pool(encoded) 
-
-        input_encoded = encoded
-        for layer in self.dense_layers:
+        
+        for layer_number, layer in enumerate(self.dense_layers):
             encoded = layer(encoded)
+            
+            if return_last_dense and (layer_number == len(self.dense_layers) - 2):
+                # shape (batch_size, dense_features[-2])
+                input_encoded = encoded
+
         if return_last_dense:
             return encoded, input_encoded
 
