@@ -96,6 +96,7 @@ For the Transformer, we started with a manual selection of values for embedding 
 
 <p align="justify">
 Taking the obtained initial results into consideration, we then employed <i>Optuna</i> to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
+</p>
     
 | Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | Num of FFNN Layers | FFNN Hidden Size | Patience | Batch Size |
 |-----------------|----------------|------------------------|--------------|--------------------|------------------|----------|------------|
@@ -111,7 +112,7 @@ An interesting observation from our experiments was the efficient training time 
 
 #### GRU 
 <p align="justify">
-...
+hyperparams..
 </p>
 
 ### Quantitative results
