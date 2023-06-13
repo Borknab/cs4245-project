@@ -47,7 +47,7 @@ The following describes the GRU architecture. Note that every timestep of the GR
 </p>
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/gru_architecture.png"/><br>
+    <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/gru_architecture.png" width="500px"/><br>
     <p align="center">Figure 1: The GRU architecture</p>
 </p>
 
@@ -96,6 +96,9 @@ To compare the performance of the models we have plotted the RMSE of the models 
 | 2013 | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
 | 2014 | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
 | 2015 | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+|  | |      |   |        | |     |  |  |
+| **Avg** | 6.27 |    5.92   |  6.11  |     **5.78**    |6.12 |   5.95   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+
 
 
 
