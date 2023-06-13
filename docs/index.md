@@ -74,7 +74,7 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/encoder-only-architecture.png"/><br>
-    <p align="center">Figure 1: The encoder-only transformer architecture.</p>
+    <p align="center">Figure 2: The encoder-only transformer architecture.</p>
 </p>
 
   
