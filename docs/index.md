@@ -31,6 +31,7 @@ In our attempt to reproduce the results presented in the paper, the first step w
 <p align="justify">
 Considering the sheer volume of data, storing it locally was not a feasible option. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing these cloud services made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
 </p>
+
 <p align="justify">
 To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders from the GitHub repository to our shared Drive, which we then accessed from Colab. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The code we implemented on Colab was essentially analogous to the run.py file in the repository, with the addition of the training functions for the models we implemented ourselves - GRU and Tranformer. 
 Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
@@ -59,15 +60,19 @@ The reason for testing a GRU based network is because it has the potential to ou
 <p align="justify">
 For the implementation of the Transformer model, we chose an encoder-only architecture, given that our task is a many-to-one, namely a sequence-to-number (i.e. the regression task of predicting the annual crop yield from the sequences of histograms representing the satellite images over the months), rather than sequence-to-sequence.
 </p>
+
 <p align="justify">
 Our initial approach was to manually construct it from scratch by implementing all the necessary layers (i.e. self-attention, normalization..) to make the model highly customizable. However, this proved to be challenging and time-consuming, thus we resorted to utilizing PyTorch's built-in classes, namely <i><b>TransformerEncoderLayer</b></i> and <i><b>TransformerEncoder</b></i>. 
 </p>
+
 <p align="justify">
 <i><b>TransformerEncoderLayer</b></i> represents the fundamental building block of the Transformer model. It comprises of a self-attention mechanism, a normalization layer and a feed-forward network. These layers are then stacked together by <i><b>TransformerEncoder</b></i> to construct the overall encoder model.
 </p>
+
 <p align="justify">
 Our encoder-only Transformer model is made of several components. First, an embedding layer transforms the input histograms into a higher dimensional space. Subsequently, positional encodings are added, to make the model aware of the sequence's order. We implemented both components manually. Next, the model applies self-attention mechanisms, enabling it to focus on different parts of the input sequence to make predictions. Following this, we implemented an attention pooling mechanism to aggregate the sequence into a single vector representation. We experimented with various pooling methods over the sequence dimension, such as average and max pooling. However, attention pooling outperformed the others by a significant margin. In brief, attention pooling works by calculating attention scores and using them to weight the contribution of each sequence element, enabling the model to focus on the most relevant features. The pooling step was necessary, as the downstream regression task expects a single fixed-size input (a vector), not a sequence. Therefore, we need some method of condensing or summarizing the sequence of vectors into a single vector. Finally, a Feed-Forward Neural Network (FFNN) is used to predict the crop yield.
 </p>
+
 <p align="justify">
 The architecture is highly configurable, allowing us to easily adjust and test key parameters as for instance the number of attention heads and encoder layers. Through experimentation, we found that due to the limited complexity of the input data, a low dropout rate, fewer heads and encoder layers, and a small hidden size yielded the best performance. More on this in the "Result" section.
 </p>
@@ -88,6 +93,7 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 ### Hyperparamater optimizations
 <p align="justify">
 Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
+</p>
 
 #### Tranformer 
 <p align="justify">
