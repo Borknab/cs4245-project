@@ -128,17 +128,18 @@ hyperparams..
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and ropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-| Year | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
-|------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
-| 2009 | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   | 4.93 | 4.78 |
-| 2010 | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   | 6.71 | 6.45 |
-| 2011 | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   | 5.66 | 5.56 |
-| 2012 | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   | 6.68 | 6.14 |
-| 2013 | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   | 6.65 | 5.89 |
-| 2014 | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   | 6.77 | 5.78 |
-| 2015 | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   | 6.76 | 5.83 |
-|  | |      |   |        | |     |  |  |
-| **Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   | 6.30 | **5.77** |
+|  Year  | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
+|--------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
+|  2009  | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   |     4.93    |       4.78       |
+|  2010  | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   |     6.71    |       6.45       |
+|  2011  | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   |     5.66    |       5.56       |
+|  2012  | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   |     6.68    |       6.14       |
+|  2013  | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   |     6.65    |       5.89       |
+|  2014  | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   |     6.77    |       5.78       |
+|  2015  | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   |     6.76    |       5.83       |
+|        |      |           |        |             |     |          |             |                  |
+|**Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   |     6.30    |     **5.77**     |
+
 <p align="center">Table 2: RMSE for the different architectures, with and without Gaussian Processses</p>
 
 
