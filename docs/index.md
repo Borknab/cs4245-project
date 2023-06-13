@@ -88,7 +88,7 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 ### Hyperparamater optimizations
 <p align="justify">
 Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
-
+</p>
 #### Tranformer 
 <p align="justify">
 For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and encoders to find a subset of value ranges that showed promising results.
@@ -124,7 +124,7 @@ To compare the performance of the models we have plotted the RMSE of the models 
 <p align="center">Table 1: Loss for the different architectures, with and without Gaussian Processses</p>
 
 
-Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
+<i>Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...</i>
 
 ## Discussion and Conclusion
 <p align="justify">
