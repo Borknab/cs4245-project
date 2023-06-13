@@ -214,18 +214,23 @@ class ModelBase:
 
         # F:
         # write hyperparameters in the title and also time stamp
+        """
         title = "_".join(
             [
                 f"{key}={val}"
                 for key, val in self.hyperparameters_df.iloc[0].to_dict().items()
             ]
+        )
+        """
         ### [CS4245] ###
+        
+        title = ""
         if self.gp is not None:
           # add the RMSE_GP_avg at the beginning of the title : "RMSE_GP_avg=0.123_..."
           title = f"RMSE_GP_avg={average_values['RMSE_GP_avg']}_" + title
         else:
           title = f"RMSE_avg={average_values['RMSE_avg']}_" + title
-
+        
 
         results_df.to_csv(self.savedir / f"{title}_{datetime.now()}.csv", index=False)
         
@@ -473,7 +478,7 @@ class ModelBase:
         # Compute training time
         end_time = datetime.now()
         training_time = end_time - start_time
-        training_time = training_time.seconds()
+        training_time = training_time.seconds
         ################
 
         self.model.load_state_dict(best_state)
