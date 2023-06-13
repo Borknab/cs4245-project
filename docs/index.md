@@ -109,6 +109,8 @@ Taking the obtained initial results into consideration, we then employed <i>Optu
 |        1        |       48       |           3            |     0.1      |         2          |       512        |    10    |     64     |
 
 <p align="center">Table 1: Best hyperparamaters for the encoder-only transformer</p>   
+
+<p align="justify">
 The discovery that the optimal configuration leaned towards lower values for various parameters seem to indicate a relatively low complexity of the data domain. The model achieved optimal results without requiring a complex or deep architecture, which signifies that it was successful in feature extraction without resorting to overfitting (given also the low dropout rate).
 </p>
 
