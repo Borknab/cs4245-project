@@ -85,7 +85,30 @@ The architecture is highly configurable, allowing us to easily adjust and test k
   
 ## Results
 
+### Hyperparamater optimizations
+<p align="justify">
+Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
+
+#### Tranformer 
+<p align="justify">
+For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and encoders to find a subset of value ranges that showed promising results.
+</p>
+<p align="justify">
+Taking the obtained initial results into consideration, we then employed <i>Optuna</i> to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The discovery that the optimal configuration leaned towards lower values for various parameters seem to indicate a relatively low complexity of the data domain. The model achieved optimal results without requiring a complex or deep architecture, which signifies that it was successful in feature extraction without resorting to overfitting (given also the low dropout rate).
+</p>
+<p align="justify">
+An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research. With an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+</p>
+
+#### GRU 
+<p align="justify">
+...
+</p>
+
+### Quantitative results
+<p align="justify">
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and ropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
+</p>
 
 | Year | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
 |------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
@@ -98,9 +121,10 @@ To compare the performance of the models we have plotted the RMSE of the models 
 | 2015 | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
 |  | |      |   |        | |     |  |  |
 | **Avg** | 6.27 |    5.92   |  6.11  |     **5.78**    |6.12 |   5.95   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+<p align="center">Table 1: Loss for the different architectures, with and without Gaussian Processses</p>
 
 
-
+Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
 
 ## Discussion and Conclusion
 <p align="justify">
