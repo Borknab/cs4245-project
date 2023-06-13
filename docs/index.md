@@ -88,14 +88,23 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 ### Hyperparamater optimizations
 <p align="justify">
 Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
-</p>
+
 #### Tranformer 
 <p align="justify">
 For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and encoders to find a subset of value ranges that showed promising results.
 </p>
+
 <p align="justify">
-Taking the obtained initial results into consideration, we then employed <i>Optuna</i> to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The discovery that the optimal configuration leaned towards lower values for various parameters seem to indicate a relatively low complexity of the data domain. The model achieved optimal results without requiring a complex or deep architecture, which signifies that it was successful in feature extraction without resorting to overfitting (given also the low dropout rate).
+Taking the obtained initial results into consideration, we then employed <i>Optuna</i> to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
+    
+| Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | Num of FFNN Layers | FFNN Hidden Size | Patience | Batch Size |
+|-----------------|----------------|------------------------|--------------|--------------------|------------------|----------|------------|
+|        1        |       48       |           3            |     0.1      |         2          |       512        |    10    |     64     |
+
+<p align="center">Table 1: Best hyperparamaters for the encoder-only transformer</p>   
+The discovery that the optimal configuration leaned towards lower values for various parameters seem to indicate a relatively low complexity of the data domain. The model achieved optimal results without requiring a complex or deep architecture, which signifies that it was successful in feature extraction without resorting to overfitting (given also the low dropout rate).
 </p>
+
 <p align="justify">
 An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research. With an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
 </p>
@@ -112,19 +121,20 @@ To compare the performance of the models we have plotted the RMSE of the models 
 
 | Year | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
 |------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
-| 2009 | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-| 2010 | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-| 2011 | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-| 2012 | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-| 2013 | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-| 2014 | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-| 2015 | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
+| 2009 | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   | 4.93 | 4.78 |
+| 2010 | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   | 6.71 | 6.45 |
+| 2011 | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   | 5.66 | 5.56 |
+| 2012 | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   | 6.68 | 6.14 |
+| 2013 | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   | 6.65 | 5.89 |
+| 2014 | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   | 6.77 | 5.78 |
+| 2015 | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   | 6.76 | 5.83 |
 |  | |      |   |        | |     |  |  |
-| **Avg** | 6.27 |    5.92   |  6.11  |     **5.78**    |6.12 |   5.95   | xxxxxxxxxxx | xxxxxxxxxxxxxxxx |
-<p align="center">Table 1: Loss for the different architectures, with and without Gaussian Processses</p>
+| **Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   | 6.30 | **5.77** |
+<p align="center">Table 2: RMSE for the different architectures, with and without Gaussian Processses</p>
 
 
-<i>Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...</i>
+<i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
+COmment on how transformer achieve the best performance </i>
 
 ## Discussion and Conclusion
 <p align="justify">
