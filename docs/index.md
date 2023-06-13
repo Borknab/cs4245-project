@@ -97,11 +97,11 @@ Once the models (Transformer and GRU) were implemented codewise, we tested them 
 
 #### Tranformer 
 <p align="justify">
-For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and encoders to find a subset of value ranges that showed promising results.
+For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
 </p>
 
 <p align="justify">
-Taking the obtained initial results into consideration, we then employed <i>Optuna</i> to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
+Taking the obtained initial results into consideration, we then employed the <i>Optuna</i> Python package to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
 </p>
     
 | Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | Num of FFNN Layers | FFNN Hidden Size | Patience | Batch Size |
@@ -115,7 +115,7 @@ The discovery that the optimal configuration leaned towards lower values for var
 </p>
 
 <p align="justify">
-An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research. With an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
 </p>
 
 #### GRU 
