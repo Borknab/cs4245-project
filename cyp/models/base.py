@@ -301,7 +301,7 @@ class ModelBase:
             patience,
         )
 
-        results = self._predict(*train_data, *test_data, *it_data, batch_size) if with_italy_validation else self._predict(*train_data, *test_data, batch_size) # [CS4245]
+        results = self._predict_it(*train_data, *test_data, *it_data, batch_size) if with_italy_validation else self._predict(*train_data, *test_data, batch_size) # [CS4245]
 
         model_information = {
             "state_dict": self.model.state_dict(),
