@@ -71,7 +71,7 @@ class MODISExporter:
 
         print(f"Done: {task.status()}")
 
-    def export(
+    def export_us(
         self,
         folder_name,
         data_type,
@@ -209,12 +209,111 @@ class MODISExporter:
                     break
         print(f"Finished Exporting {count} files!")
 
+    ### [CS4245] ###
+    #
+    #   Separate export function for Italian sattellite data
+    #
+    ################
+    def export_italy(
+        self,
+        folder_name,
+        data_type,
+        coordinate_system="EPSG:4326",
+        scale=500,
+        export_limit=None,
+        min_img_val=None,
+        max_img_val=None
+    ):
+        imgcoll = (
+            ee.ImageCollection(self.collection_id)
+            .filterBounds(ee.Geometry.Rectangle(4.715739, 47.523461, 20.653583, 35.939656))
+            .filterDate("2002-12-31", "2016-8-4")
+        )
+
+        datatype_to_func = {
+            "image": _append_im_band,
+            "mask": _append_mask_band,
+            "temperature": _append_temp_band,
+        }
+
+        img = imgcoll.iterate(datatype_to_func[data_type])
+        img = ee.Image(img)
+
+        # "clip" the values of the bands
+        if min_img_val is not None:
+            # passing en ee.Number creates a constant image
+            img_min = ee.Image(ee.Number(min_img_val))
+            img = img.min(img_min)
+        if max_img_val is not None:
+            img_max = ee.Image(ee.Number(max_img_val))
+            img = img.max(img_max)
+
+        country = ee.FeatureCollection("FAO/GAUL/2015/level2").filter("ADM0_NAME == 'Italy'")
+        count = 0
+
+        # Italy province codes
+        adm_codes = [ [ 1631, 18400 ], [ 1631, 18407 ], [ 1618, 18323 ], [ 1618, 18325 ], [ 1618, 18327 ], [ 1620, 18336 ], [ 1620, 18342 ], [ 1616, 18317 ], [ 1616, 18318 ], [ 1616, 18319 ], [ 1616, 18320 ], [ 1617, 18321 ], [ 1617, 18322 ], [ 1618, 18324 ], [ 1618, 18326 ], [ 1619, 18328 ], [ 1619, 18329 ], [ 1619, 18330 ], [ 1619, 18332 ], [ 1619, 18333 ], [ 1620, 18334 ], [ 1620, 18337 ], [ 1620, 18338 ], [ 1620, 18339 ], [ 1620, 18340 ], [ 1620, 18341 ], [ 1622, 18347 ], [ 1622, 18348 ], [ 1622, 18349 ], [ 1622, 18350 ], [ 1622, 18351 ], [ 1623, 18352 ], [ 1623, 18353 ], [ 1623, 18354 ], [ 1623, 18355 ], [ 1625, 18367 ], [ 1625, 18368 ], [ 1625, 18369 ], [ 1625, 18370 ], [ 1626, 18371 ], [ 1626, 18372 ], [ 1627, 18373 ], [ 1627, 18374 ], [ 1627, 18376 ], [ 1627, 18378 ], [ 1628, 18381 ], [ 1628, 18382 ], [ 1628, 18383 ], [ 1628, 18384 ], [ 1628, 18385 ], [ 1629, 18386 ], [ 1629, 18387 ], [ 1629, 18388 ], [ 1629, 18389 ], [ 1630, 18390 ], [ 1630, 18391 ], [ 1630, 18392 ], [ 1630, 18393 ], [ 1630, 18394 ], [ 1630, 18395 ], [ 1630, 18396 ], [ 1630, 18397 ], [ 1630, 18398 ], [ 1631, 18399 ], [ 1631, 18401 ], [ 1631, 18402 ], [ 1631, 18403 ], [ 1631, 18404 ], [ 1631, 18405 ], [ 1631, 18406 ], [ 1631, 18408 ], [ 1633, 18411 ], [ 1633, 18412 ], [ 1620, 18335 ], [ 1621, 18343 ], [ 1621, 18344 ], [ 1621, 18345 ], [ 1621, 18346 ], [ 1624, 18356 ], [ 1624, 18357 ], [ 1624, 18358 ], [ 1624, 18359 ], [ 1624, 18360 ], [ 1624, 18361 ], [ 1624, 18362 ], [ 1624, 18363 ], [ 1624, 18364 ], [ 1624, 18365 ], [ 1624, 18366 ], [ 1627, 18375 ], [ 1627, 18377 ], [ 1627, 18379 ], [ 1627, 18380 ], [ 1632, 18409 ], [ 1632, 18410 ], [ 1634, 18413 ], [ 1635, 18414 ], [ 1635, 18415 ], [ 1635, 18416 ], [ 1635, 18417 ], [ 1635, 18418 ], [ 1635, 18419 ], [ 1635, 18420 ] ]
+
+        for [adm1_code, adm2_code] in adm_codes:
+            fname = "{}_{}_{}".format(122, adm1_code, adm2_code)
+
+            file_region = country.filter(f"ADM1_CODE == {adm1_code}").filter(f"ADM2_CODE == {adm2_code}")
+            processed_img = img.clip(file_region)
+            while True:
+                try:
+                    self._export_one_image(
+                        processed_img,
+                        folder_name,
+                        fname,
+                        file_region.geometry(),
+                        scale,
+                        coordinate_system,
+                    )
+                except (ee.ee_exception.EEException, ssl.SSLEOFError) as err:
+                    print(f"Retrying (ADM1 {adm1_code} - ADM2 {adm2_code}), Italy")
+                    time.sleep(10)
+                    continue
+                break
+
+            count += 1
+            if export_limit:
+                if count >= export_limit:
+                    print("Reached export limit! Stopping")
+                    break
+                
+        print(f"Finished Exporting {count} files!")
+
+    def export(
+        self,
+        folder_name,
+        data_type,
+        coordinate_system="EPSG:4326",
+        scale=500,
+        export_limit=None,
+        min_img_val=None,
+        max_img_val=None,
+        major_states_only=True,
+        check_if_done=False,
+        download_folder=None,
+        for_italy=False
+    ):
+        if for_italy: 
+            self.export_italy(folder_name, data_type, coordinate_system, scale, export_limit, min_img_val, max_img_val)
+        else: 
+            self.export_us(folder_name, data_type, coordinate_system, scale, export_limit, min_img_val, max_img_val, major_states_only, check_if_done, download_folder)
+
+    ### [CS4245] ###
+    #
+    #   Added for_italy parameter to indicate whether to export for Italy or US
+    #
+    ################
     def export_all(
         self,
         export_limit=None,
         major_states_only=True,
         check_if_done=True,
         download_folder=None,
+        for_italy=False
     ):
         """
         Export all the data.
@@ -243,6 +342,7 @@ class MODISExporter:
             major_states_only=major_states_only,
             check_if_done=check_if_done,
             download_folder=download_folder[0],
+            for_italy=for_italy
         )
 
         # pull_MODIS_landcover_entire_county_clip.py
@@ -254,6 +354,7 @@ class MODISExporter:
             major_states_only=major_states_only,
             check_if_done=check_if_done,
             download_folder=download_folder[1],
+            for_italy=for_italy
         )
 
         # pull_MODIS_temperature_entire_county_clip.py
@@ -265,6 +366,7 @@ class MODISExporter:
             major_states_only=major_states_only,
             check_if_done=check_if_done,
             download_folder=download_folder[2],
+            for_italy=for_italy
         )
         print("Done exporting! Download the folders from your Google Drive")
 
