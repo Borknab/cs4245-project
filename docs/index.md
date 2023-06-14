@@ -83,11 +83,23 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 </p>
 
   
-### New dataset: Soybean in Italy
+### New evalution: Soybean yields in Italy
 <p align="justify">
-...
+<p align="center">
+    <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
+    <p align="center">Figure x: Changes in errors between the prediced crop yields and the real crop yields per Italian province from 2010 till 2015</p>
 </p>
-  
+</p>
+
+| Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
+|------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
+| 2010 | 32.2186   | 25.64719 | 320.03386         | 4.60165   | 3.89281  | 15.72162          | 0.002       | 0.00277    | 0.58918             | 26.92416    | 22.1686    | 35.3953             |
+| 2011 | 42.21827  | 42.22494 | 320.03386         | 5.48281   | 5.09828  | 15.38811          | 0.00097     | 0.0092     | 2.17802             | 27.65279    | 25.32015   | 52.50981            |
+| 2012 | 9.04276   | 40.653   | 510.69951         | 2.28145   | 4.95761  | 18.62258          | 0.00003     | 0.00076    | 1.8417              | 22.43994    | 28.50721   | 66.13747            |
+| 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
+| 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
+| 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
+
 ## Results
 
 ### Hyperparamater optimizations
