@@ -32,12 +32,12 @@ class Engineer:
 
         # CS4245: Add initialization distinction for Italy
         if for_italy: 
-            self.yield_data = load(yield_data_filepath)[
+            self.yield_data = load(yield_data_filepath, for_italy)[
                 ["Province", "Year", "Value"]
             ]
         else:
             # merge the yield and county data for easier manipulation
-            yield_data = load(yield_data_filepath)[
+            yield_data = load(yield_data_filepath, for_italy)[
                 ["Year", "State ANSI", "County ANSI", "Value"]
             ]
             yield_data.columns = ["Year", "State", "County", "Value"]

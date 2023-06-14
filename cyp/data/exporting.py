@@ -22,12 +22,14 @@ class MODISExporter:
         The ID Earth Engine Image Collection being exported
     """
 
+    # CS4245: load locations differently in case the Italian data is used
     def __init__(
         self,
         locations_filepath=Path("data/yield_data.csv"),
         collection_id="MODIS/051/MCD12Q1",
+        for_italy=False
     ):
-        self.locations = load(locations_filepath)
+        self.locations = load(locations_filepath, for_italy=for_italy)
 
         self.collection_id = collection_id
 
@@ -40,12 +42,13 @@ class MODISExporter:
                 "Have you authenticated the earth engine?"
             )
 
-    def update_parameters(self, locations_filepath=None, collection_id=None):
+    # CS4245: load locations differently in case the Italian data is used
+    def update_parameters(self, locations_filepath=None, collection_id=None, for_italy=False):
         """
         Update the locations file or the collection id
         """
         if locations_filepath is not None:
-            self.locations = load(locations_filepath)
+            self.locations = load(locations_filepath, for_italy=for_italy)
         if collection_id is not None:
             self.collection_id = collection_id
 
@@ -330,6 +333,7 @@ class MODISExporter:
         self.update_parameters(
             locations_filepath=Path("data/yield_data.csv"),
             collection_id="MODIS/MOD09A1",
+            for_italy=for_italy
         )
 
         # # pull_MODIS_entire_county_clip.py
@@ -346,7 +350,7 @@ class MODISExporter:
         )
 
         # pull_MODIS_landcover_entire_county_clip.py
-        self.update_parameters(collection_id="MODIS/006/MCD12Q1")
+        self.update_parameters(collection_id="MODIS/006/MCD12Q1", for_italy=for_italy)
         self.export(
             folder_name="crop_yield-data_mask",
             data_type="mask",
@@ -358,7 +362,7 @@ class MODISExporter:
         )
 
         # pull_MODIS_temperature_entire_county_clip.py
-        self.update_parameters(collection_id="MODIS/MYD11A2")
+        self.update_parameters(collection_id="MODIS/MYD11A2", for_italy=for_italy)
         self.export(
             folder_name="crop_yield-data_temperature",
             data_type="temperature",
