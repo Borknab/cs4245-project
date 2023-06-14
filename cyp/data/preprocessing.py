@@ -46,6 +46,7 @@ class DataCleaner:
         multiprocessing=False,
         processes=4,
         parallelism=6,
+        for_italy=False
     ):
         self.mask_path = mask_path
         self.temperature_path = temperature_path
@@ -60,11 +61,15 @@ class DataCleaner:
         if not self.savedir.exists():
             self.savedir.mkdir()
 
-        self.yield_data = load(yield_data_path)[
-            ["Year", "State ANSI", "County ANSI"]
-        ].values
+        # CS4245: Add initialization distinction for Italy
+        if for_italy:
+            self.yield_data = []
+        else:
+            self.yield_data = load(yield_data_path)[
+                ["Year", "State ANSI", "County ANSI"]
+            ].values
 
-    def process(self, num_years=14, delete_when_done=False, checkpoint=True):
+    def process(self, num_years=14, delete_when_done=False, checkpoint=True, for_italy=False):
         """
         Process all the data.
 
@@ -78,22 +83,35 @@ class DataCleaner:
         checkpoint: boolean, default=True
             Whether or not to skip tif files which have already had their .npy arrays
             written
+        for_italy: boolean, default=False
+            Whether or not to process the data for Italy
         """
         if delete_when_done:
             print("Warning! delete_when_done=True will delete the .tif files")
         if not self.multiprocessing:
             for filename in self.tif_files:
-                process_county(
-                    filename,
-                    self.savedir,
-                    self.image_path,
-                    self.mask_path,
-                    self.temperature_path,
-                    self.yield_data,
-                    num_years=num_years,
-                    delete_when_done=delete_when_done,
-                    checkpoint=checkpoint,
-                )
+                if for_italy:
+                    process_italy(
+                        filename,
+                        self.savedir,
+                        self.image_path,
+                        self.mask_path,
+                        self.temperature_path,
+                        num_years=num_years,
+                        delete_when_done=delete_when_done,
+                    )
+                else:
+                    process_county(
+                        filename,
+                        self.savedir,
+                        self.image_path,
+                        self.mask_path,
+                        self.temperature_path,
+                        self.yield_data,
+                        num_years=num_years,
+                        delete_when_done=delete_when_done,
+                        checkpoint=checkpoint,
+                    )
         else:
             length = len(self.tif_files)
             files_iter = iter(self.tif_files)
@@ -238,6 +256,92 @@ def process_county(
         (image_path / filename).unlink()
         (temperature_path / filename).unlink()
         (mask_path / filename).unlink()
+    print(f"{filename} array written")
+
+### [CS4245] ###
+#
+#   Separate function for processing Italian province sattellite data
+#
+################
+def process_italy(
+    filename,
+    savedir,
+    image_path,
+    mask_path,
+    temperature_path,
+    num_years,
+    delete_when_done
+):
+    """
+    Process and save county level data
+    """
+    country_with_province = filename.split("_")
+
+    print("step 1")
+
+    image = np.transpose(
+        np.array(gdal.Open(str(image_path / filename)).ReadAsArray(), dtype="uint16"),
+        axes=(1, 2, 0),
+    )
+
+    temp = np.transpose(
+        np.array(gdal.Open(str(temperature_path / filename)).ReadAsArray(), dtype="uint16"),
+        axes=(1, 2, 0),
+    )
+
+    print("step 2")
+
+    # From https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MOD09A1#description,
+    # the temperature bands are in Kelvin, with a scale of 0.02. 11500 therefore represents -43C,
+    # and (with a bin range of 4999), we get to 16500 which represents 57C - this should
+    # comfortably cover the range of expected temperatures for these counties.
+    temp -= 11500
+
+    mask = np.transpose(
+        np.array(gdal.Open(str(mask_path / filename)).ReadAsArray(), dtype="uint16"),
+        axes=(1, 2, 0),
+    )
+
+    print("step 3")
+
+    # a value of 12 indicates farmland; everything else, we want to ignore
+    mask[mask != 12] = 0
+    mask[mask == 12] = 1
+
+    # when exporting the image, we appended bands from many years into a single image for efficiency. We want
+    # to split it back up now
+
+    # num bands and composite period from the MODIS website
+    img_list = divide_into_years(
+        image, bands=7, composite_period=8, num_years=num_years
+    )
+    mask_list = divide_into_years(
+        mask, bands=1, composite_period=365, num_years=num_years, extend=True
+    )
+    temp_list = divide_into_years(
+        temp, bands=2, composite_period=8, num_years=num_years
+    )
+
+    print("step 4")
+
+    img_temp_merge = merge_image_lists(img_list, 7, temp_list, 2)
+
+    masked_img_temp = mask_image(img_temp_merge, mask_list)
+
+    start_year = 2003  # start year from the MODIS website
+
+    print("step 5")
+
+    for i in range(0, num_years):
+        year = i + start_year
+        if year >= 2010 and year <= 2015:
+            save_filename = f"{year}_{country_with_province[0]}_{country_with_province[2]}"
+            np.save(savedir / save_filename, masked_img_temp[i])
+    if delete_when_done:
+        (image_path / filename).unlink()
+        (temperature_path / filename).unlink()
+        (mask_path / filename).unlink()
+
     print(f"{filename} array written")
 
 

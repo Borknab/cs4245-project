@@ -232,7 +232,7 @@ class Engineer:
 
     ### [CS4245] ###
     #
-    #   Separate process function for Italian sattellite data
+    #   Separate process function for Italian data
     #
     ################
     def process_italy(
