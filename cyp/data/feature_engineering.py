@@ -25,22 +25,29 @@ class Engineer:
         cleaned_data_path=Path("data/img_output"),
         yield_data_filepath=Path("data/yield_data.csv"),
         county_data_filepath=Path("data/county_data.csv"),
+        for_italy=False
     ):
         self.cleaned_data = cleaned_data_path
         self.processed_files = self.get_filenames()
 
-        # merge the yield and county data for easier manipulation
-        yield_data = load(yield_data_filepath)[
-            ["Year", "State ANSI", "County ANSI", "Value"]
-        ]
-        yield_data.columns = ["Year", "State", "County", "Value"]
-        county_data = pd.read_csv(county_data_filepath)[
-            ["CntyFips", "StateFips", "Longitude", "Latitude"]
-        ]
-        county_data.columns = ["County", "State", "Longitude", "Latitude"]
-        self.yield_data = yield_data.merge(
-            county_data, how="left", on=["County", "State"]
-        )
+        # CS4245: Add initialization distinction for Italy
+        if for_italy: 
+            self.yield_data = load(yield_data_filepath)[
+                ["Province", "Year", "Value"]
+            ]
+        else:
+            # merge the yield and county data for easier manipulation
+            yield_data = load(yield_data_filepath)[
+                ["Year", "State ANSI", "County ANSI", "Value"]
+            ]
+            yield_data.columns = ["Year", "State", "County", "Value"]
+            county_data = pd.read_csv(county_data_filepath)[
+                ["CntyFips", "StateFips", "Longitude", "Latitude"]
+            ]
+            county_data.columns = ["County", "State", "Longitude", "Latitude"]
+            self.yield_data = yield_data.merge(
+                county_data, how="left", on=["County", "State"]
+            )
 
     def get_filenames(self):
         """
@@ -130,7 +137,7 @@ class Engineer:
                 hist.append(np.stack(imhist, axis=1))
         return np.stack(hist, axis=1)
 
-    def process(
+    def process_us(
         self,
         num_bands=9,
         generate="histogram",
@@ -222,3 +229,110 @@ class Engineer:
             output_index=np.stack(state_county_info),
         )
         print(f"Finished generating image {generate}s!")
+
+    ### [CS4245] ###
+    #
+    #   Separate process function for Italian sattellite data
+    #
+    ################
+    def process_italy(
+        self,
+        num_bands=9,
+        generate="histogram",
+        num_bins=32,
+        max_bin_val=4999,
+        channels_first=True,
+    ):
+        """
+        Parameters
+        ----------
+        num_bands: int, default=9
+            The number of bands per image. Default taken from the number of bands in the
+            MOD09A1 + the number of bands in the MYD11A2 datasets
+        generate: str, {'mean', 'histogram'}, default='mean'
+            What to generate from the data. If 'mean', calculates a mean
+            of all the bands. If 'histogram', calculates a histogram of all
+            the bands with num_bins bins for each band.
+        num_bins: int, default=32
+            If generate=='histogram', the number of bins to generate in the histogram.
+        max_bin_val: int, default=4999
+            The maximum value of the bins. The default is taken from the original repository;
+            note that the maximum pixel values from the MODIS datsets range from 16000 to
+            18000 depending on the band
+        channels_first: boolean, default=True
+            If true, the output histogram has shape [bands, times, bins]. Otherwise, it
+            has shape [times, bins, bands]
+        """
+
+        # define all the outputs of this method
+        output_images = []
+        yields = []
+        years = []
+        province_info = []
+
+        for yield_data in self.yield_data.itertuples():
+            year = yield_data.Year
+            province_id = yield_data.Province
+            value = yield_data.Value
+
+            # 122 is the administration ID for Italy
+            filename = f"{year}_122_{province_id}.tif.npy"
+
+            if filename in self.processed_files:
+                image = np.load(self.cleaned_data / filename)
+                image = self.filter_timespan(
+                    image, start_day=49, end_day=305, bands=num_bands
+                )
+
+                if generate == "mean":
+                    image = (
+                        np.sum(image, axis=(0, 1))
+                        / np.count_nonzero(image)
+                        * image.shape[2]
+                    )
+                    image[np.isnan(image)] = 0
+                elif generate == "histogram":
+                    image = self._calculate_histogram(
+                        image,
+                        bands=num_bands,
+                        num_bins=num_bins,
+                        max_bin_val=max_bin_val,
+                        channels_first=channels_first,
+                    )
+                output_images.append(image)
+                yields.append(value)
+                years.append(year)
+                province_info.append(np.array([int(122), int(province_id)]))
+
+                print(
+                    f"Italy (122), Province: {province_id}, Year: {year}, Output shape: {image.shape}"
+                )
+
+        np.savez(
+            self.cleaned_data
+            / f'histogram_all_{"mean" if (generate == "mean") else "full"}.npz',
+            output_image=np.stack(output_images),
+            output_yield=np.array(yields),
+            output_year=np.array(years),
+            output_index=np.stack(province_info),
+        )
+        print(f"Finished generating image {generate}s!")
+
+    ### [CS4245] ###
+    #
+    #   Added for_italy parameter to indicate whether to export for Italy or US
+    #
+    ################
+    def process(
+        self,
+        num_bands=9,
+        generate="histogram",
+        num_bins=32,
+        max_bin_val=4999,
+        channels_first=True,
+        for_italy=False,
+    ):
+        if for_italy: 
+            self.process_italy(num_bands, generate, num_bins, max_bin_val, channels_first)
+        else:
+            self.process_us(num_bands, generate, num_bins, max_bin_val, channels_first)
