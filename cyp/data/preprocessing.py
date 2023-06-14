@@ -69,6 +69,11 @@ class DataCleaner:
                 ["Year", "State ANSI", "County ANSI"]
             ].values
 
+    ### [CS4245] ###
+    #
+    #   Added a separate for_italy attribute to indicate whether the data should be processed for Italy
+    #
+    ################
     def process(self, num_years=14, delete_when_done=False, checkpoint=True, for_italy=False):
         """
         Process all the data.
