@@ -67,6 +67,7 @@ class ModelBase:
         weight_decay=0,
         l1_weight=0,
         patience=10,
+        with_italy_validation=False # [CS4245]
     ):
         """
         Train the models. Note that multiple models are trained: as per the paper, a model
@@ -99,6 +100,8 @@ class ModelBase:
         patience: int or None, default=10
             The number of epochs to wait without improvement in the validation loss before terminating training.
             Note that the original repository doesn't use early stopping.
+        with_italy_validation: bool, default=False
+            The boolean indicating whether to include Italy in the validation set.
         """
 
         with np.load(path_to_histogram) as hist:
@@ -150,6 +153,7 @@ class ModelBase:
                         weight_decay,
                         l1_weight,
                         patience,
+                        with_italy_validation
                     )
 
                     years_list.append(pred_year)
@@ -257,6 +261,7 @@ class ModelBase:
         weight_decay,
         l1_weight,
         patience,
+        with_italy_validation
     ):
         """
         Train one model on one year of data, and then save the model predictions.
@@ -265,6 +270,20 @@ class ModelBase:
         train_data, test_data = self.prepare_arrays(
             images, yields, locations, indices, years, predict_year, time
         )
+
+        ### [CS4245] ###
+        it_data = []
+        if with_italy_validation:
+            with np.load(Path("data_italy/img_output") / "histogram_all_full.npz") as hist:
+                it_images = hist["output_image"]
+                it_yields = hist["output_yield"]
+                it_years = hist["output_year"]
+                it_indices = hist["output_index"]
+
+            it_data = self.prepare_italy_array(it_images, it_yields, it_indices, it_years, predict_year, time, images, years)
+
+            print("Italy data prepared")
+        ################
 
         # reinitialize the model, since self.model may be trained multiple
         # times in one call to run()
@@ -282,7 +301,7 @@ class ModelBase:
             patience,
         )
 
-        results = self._predict(*train_data, *test_data, batch_size)
+        results = self._predict(*train_data, *test_data, *it_data, batch_size) if with_italy_validation else self._predict(*train_data, *test_data, batch_size) # [CS4245]
 
         model_information = {
             "state_dict": self.model.state_dict(),
@@ -568,6 +587,126 @@ class ModelBase:
             else:
                 results[key] = np.array(results[key])
         return results
+    
+    # CS4245: 
+    # Added a separate function for making regular predictions together with predictions for Italy
+    # (as part of the validation process)
+    def _predict_it(
+        self,
+        train_images,
+        train_yields,
+        train_locations,
+        train_indices,
+        train_years,
+        test_images,
+        test_yields,
+        test_locations,
+        test_indices,
+        test_years,
+        it_images,
+        it_yields,
+        it_indices,
+        it_years,
+        batch_size,
+    ):
+        """
+        Predict on the training and validation data. Optionally, return the last
+        feature vector of the model.
+        """
+        train_dataset = TensorDataset(
+            train_images, train_yields, train_locations, train_indices, train_years
+        )
+
+        test_dataset = TensorDataset(
+            test_images, test_yields, test_locations, test_indices, test_years
+        )
+
+        italy_validation_dataset = TensorDataset(
+            it_images, it_yields, it_indices, it_years
+        )
+
+        train_dataloader = DataLoader(train_dataset, batch_size=batch_size)
+        test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
+        italy_validation_dataset = DataLoader(italy_validation_dataset, batch_size=batch_size)
+
+        results = defaultdict(list)
+
+        self.model.eval()
+        with torch.no_grad():
+            for train_im, train_yield, train_loc, train_idx, train_year in tqdm(
+                train_dataloader
+            ):
+                model_output = self.model(
+                    train_im, return_last_dense=True if (self.gp is not None) else False
+                )
+                if self.gp is not None:
+                    pred, feat = model_output
+                    if feat.device != "cpu":
+                        feat = feat.cpu()
+                    results["train_feat"].append(feat.numpy())
+                else:
+                    pred = model_output
+                results["train_pred"].extend(pred.squeeze(1).tolist())
+                results["train_real"].extend(train_yield.squeeze(1).tolist())
+                results["train_loc"].append(train_loc.numpy())
+                results["train_indices"].append(train_idx.numpy())
+                results["train_years"].extend(train_year.tolist())
+
+            for test_im, test_yield, test_loc, test_idx, test_year in tqdm(
+                test_dataloader
+            ):
+                model_output = self.model(
+                    test_im, return_last_dense=True if (self.gp is not None) else False
+                )
+                if self.gp is not None:
+                    pred, feat = model_output
+                    if feat.device != "cpu":
+                        feat = feat.cpu()
+                    results["test_feat"].append(feat.numpy())
+                else:
+                    pred = model_output
+                results["test_pred"].extend(pred.squeeze(1).tolist())
+                results["test_real"].extend(test_yield.squeeze(1).tolist())
+                results["test_loc"].append(test_loc.numpy())
+                results["test_indices"].append(test_idx.numpy())
+                results["test_years"].extend(test_year.tolist())
+
+            for it_im, it_yield, it_idx, it_year in tqdm(
+                italy_validation_dataset
+            ):
+                model_output = self.model(
+                    it_im, return_last_dense=True if (self.gp is not None) else False
+                )
+                if self.gp is not None:
+                    pred, feat = model_output
+                    if feat.device != "cpu":
+                        feat = feat.cpu()
+                    results["it_feat"].append(feat.numpy())
+                else:
+                    pred = model_output
+                results["it_pred"].extend(pred.squeeze(1).tolist())
+                results["it_real"].extend(it_yield.squeeze(1).tolist())
+                results["it_indices"].append(it_idx.numpy())
+                results["it_years"].extend(it_year.tolist())
+
+            print("Finished validating italy")
+
+        for key in results:
+            if key in [
+                "train_feat",
+                "test_feat",
+                "it_feat",
+                "train_loc",
+                "test_loc",
+                "train_indices",
+                "test_indices",
+                "it_indices",
+            ]:
+                results[key] = np.concatenate(results[key], axis=0)
+            else:
+                results[key] = np.array(results[key])
+
+        return results
 
     def prepare_arrays(
         self, images, yields, locations, indices, years, predict_year, time
@@ -614,6 +753,38 @@ class ModelBase:
         )
 
         return train_data, test_data
+
+    # CS4245: Added a separate function for preparing the Italy data array
+    def prepare_italy_array(
+        self, images, yields, indices, years, predict_year, time, train_images, train_years
+    ):
+        """Prepares the inputs for the model, in the following way:
+        - normalizes the images
+        - splits into a train and val set
+        - turns the numpy arrays into tensors
+        - removes excess months, if monthly predictions are being made
+        """
+        train_idx = np.nonzero(train_years < predict_year)[0]
+        idx = np.nonzero(years == predict_year)[0]
+
+        mean = np.mean(train_images[train_idx], axis=(0, 2, 3))
+        year_images = images[idx]
+        year_images = (year_images.transpose(0, 2, 3, 1) - mean).transpose(0, 3, 1, 2)
+
+        Data = namedtuple("Data", ["images", "yields", "indices", "years"])
+
+        data = Data(
+            images=torch.as_tensor(
+                year_images[:, :, :time, :], device=self.device
+            ).float(),
+            yields=torch.as_tensor(yields[idx], device=self.device)
+            .float()
+            .unsqueeze(1),
+            indices=torch.as_tensor(indices[idx]),
+            years=torch.as_tensor(years[idx]),
+        )
+
+        return data
 
     @staticmethod
     def _normalize(train_images, val_images):
