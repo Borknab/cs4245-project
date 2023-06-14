@@ -265,7 +265,7 @@ def process_county(
 
 ### [CS4245] ###
 #
-#   Separate function for processing Italian province sattellite data
+#   Separate function for processing Italian province satellite data
 #
 ################
 def process_italy(

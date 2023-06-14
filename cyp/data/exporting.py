@@ -214,7 +214,7 @@ class MODISExporter:
 
     ### [CS4245] ###
     #
-    #   Separate export function for Italian sattellite data
+    #   Separate export function for Italian satellite data
     #
     ################
     def export_italy(
