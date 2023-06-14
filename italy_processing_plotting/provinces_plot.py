@@ -111,8 +111,8 @@ def _single_plot(err_dict, svg_file, savepath, colors):
 
 def calculate_stats(pred_values, real_values):
     return {
-        "mse": np.square(np.subtract(pred_values, real_values)).mean(), 
-        "mae": np.abs(np.subtract(pred_values, real_values)).mean(), 
-        "min_abs_err": np.min(np.abs(np.subtract(pred_values, real_values))), 
-        "max_abs_err": np.max(np.abs(np.subtract(pred_values, real_values)))
+        "mse": round(np.square(np.subtract(pred_values, real_values)).mean(), 5), 
+        "mae": round(np.abs(np.subtract(pred_values, real_values)).mean(), 5), 
+        "min_abs_err": round(np.min(np.abs(np.subtract(pred_values, real_values))), 5), 
+        "max_abs_err": round(np.max(np.abs(np.subtract(pred_values, real_values))), 5)
     }
