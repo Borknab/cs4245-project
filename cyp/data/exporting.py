@@ -330,15 +330,16 @@ class MODISExporter:
         ), "Must have 3 download folders for the 3 exports!"
 
         # first, make sure the class was initialized correctly
+        locations_filepath = Path("data/yield_data.csv") if not for_italy else Path("data_italy/it_yield_data.csv")
         self.update_parameters(
-            locations_filepath=Path("data/yield_data.csv"),
+            locations_filepath=locations_filepath,
             collection_id="MODIS/MOD09A1",
             for_italy=for_italy
         )
 
         # # pull_MODIS_entire_county_clip.py
         self.export(
-            folder_name="crop_yield-data_image",
+            folder_name="crop_yield-data_image" if not for_italy else "it_crop_yield-data_image",
             data_type="image",
             min_img_val=16000,
             max_img_val=100,
@@ -352,7 +353,7 @@ class MODISExporter:
         # pull_MODIS_landcover_entire_county_clip.py
         self.update_parameters(collection_id="MODIS/006/MCD12Q1", for_italy=for_italy)
         self.export(
-            folder_name="crop_yield-data_mask",
+            folder_name="crop_yield-data_mask" if not for_italy else "it_crop_yield-data_mask",
             data_type="mask",
             export_limit=export_limit,
             major_states_only=major_states_only,
@@ -364,7 +365,7 @@ class MODISExporter:
         # pull_MODIS_temperature_entire_county_clip.py
         self.update_parameters(collection_id="MODIS/MYD11A2", for_italy=for_italy)
         self.export(
-            folder_name="crop_yield-data_temperature",
+            folder_name="crop_yield-data_temperature" if not for_italy else "it_crop_yield-data_temperature",
             data_type="temperature",
             export_limit=export_limit,
             major_states_only=major_states_only,
