@@ -82,7 +82,7 @@ The architecture is highly configurable, allowing us to easily adjust and test k
   
 ### New evalution: Soybean yields in Italy
 <p align="justify">
-Having experimented with alternetive arhitectural solutions to perform soybean yield predictions, we wanted to identify how well can the base model (without changing the training data) do yield predictions for different countries. If the model proved to be accurate for another geographical location, it could potentially then be used to predict crop yield in countries where crop yield data is more scarce. Consequently, we chose to make predictions for Italy, because we could find the respective soybean yields per province, which was essential to quantitavely evaluate the model.
+Having experimented with alternative arhitectural solutions to perform soybean yield predictions, we wanted to identify how well can the base model <i>(without changing the training data)</i> do yield predictions for different countries. If the model proved to be accurate for another geographical location, it could then potentially be used to predict crop yields in countries where crop yield data is more scarce. Consequently, we chose to make predictions for Italy, because we could find the respective soybean yields per province, which were essential to quantitatively evaluate the model. Naturally, the model can still output predictions without the ground truth yields, but there is then no way to quantitatively assess the fitness of the model.
 </p>
 
 <p align="justify">
