@@ -89,12 +89,16 @@ Having experimented with alternetive arhitectural solutions to perform soybean y
 To verify whether the model trained on the satellite images for US could make accurate soybean yield predictions for Italian provinces, we had to get images from the same datasets for Italy. Thankfully, it was possible, as the aforementioned MODIS datasets provide a global coverage. The pipeline of getting soybean yield predictions consisted of the following steps (in chronolological order):
 </p>
 
-- Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retreived from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;
-- Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];
-- Converting the yields from quintals per hectar per bushels to acre;
-- Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changed had to be made to be able to use the model on different data;
-- Selecting the model for evaluation. As the datasets provides 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;
-- Evaluating the model's performance with the data for Italy.
+<p align="justify">
+<ul>
+<li>Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retreived from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;</li>
+<li>Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</li>
+<li>Converting the yields from quintals per hectar per bushels to acre;</li>
+<li>Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changed had to be made to be able to use the model on different data;</li>
+<li>Selecting the model for evaluation. As the datasets provides 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;</li>
+<li>Evaluating the model's performance with the data for Italy.</li>
+</ul>
+</p>
 
 ## Results
 
