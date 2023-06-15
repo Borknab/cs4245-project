@@ -70,11 +70,11 @@ Our initial approach was to manually construct it from scratch by implementing a
 </p>
 
 <p align="justify">
-Our encoder-only Transformer model is made of several components. First, an embedding layer transforms the input histograms into a higher dimensional space. Subsequently, positional encodings are added, to make the model aware of the sequence's order. We implemented both components manually. Next, the model applies self-attention mechanisms, enabling it to focus on different parts of the input sequence to make predictions. Following this, we implemented an attention pooling mechanism to aggregate the sequence into a single vector representation. We experimented with various pooling methods over the sequence dimension, such as average and max pooling. However, attention pooling outperformed the others by a significant margin. In brief, attention pooling works by calculating attention scores and using them to weight the contribution of each sequence element, enabling the model to focus on the most relevant features. The pooling step was necessary, as the downstream regression task expects a single fixed-size input (a vector), not a sequence. Therefore, we need some method of condensing or summarizing the sequence of vectors into a single vector. Finally, a Feed-Forward Neural Network (FFNN) is used to predict the crop yield.
+Our encoder-only Transformer model is made of several components. First, an embedding layer transforms the input histograms into a new embedded dimensional space. Subsequently, positional encodings are added, to make the model aware of the sequence's order. We implemented both components manually. Next, the model applies self-attention mechanisms, enabling it to focus on different parts of the input sequence to make predictions. Following this, we implemented an attention pooling mechanism to aggregate the sequence into a single vector representation. We experimented with various pooling methods over the sequence dimension, such as average and max pooling. However, attention pooling outperformed the others by a significant margin. In brief, attention pooling works by calculating attention scores and using them to weight the contribution of each sequence element, enabling the model to focus on the most relevant features. The pooling step was necessary, as the downstream regression task expects a single fixed-size input (a vector), not a sequence. Therefore, we need some method of condensing or summarizing the sequence of vectors into a single vector. Finally, a Feed-Forward Neural Network (FFNN) is used to predict the crop yield.
 </p>
 
 <p align="justify">
-The architecture is highly configurable, allowing us to easily adjust and test key parameters as for instance the number of attention heads and encoder layers. Through experimentation, we found that due to the limited complexity of the input data, a low dropout rate, fewer heads and encoder layers, and a small hidden size yielded the best performance. More on this in the "Result" section.
+The architecture is highly configurable, allowing us to easily adjust and test key parameters as for instance the number of attention heads and encoder layers. Through experimentation, we found that due to the limited complexity of the input data, a low dropout rate, fewer heads and encoder layers, and a small hidden sizes for the feed forward neural networks (FFNNs) yielded the best performance. More on this in the "Result" section.
 </p>
 
 <p align="center">
@@ -104,9 +104,9 @@ For the Transformer, we started with a manual selection of values for embedding 
 Taking the obtained initial results into consideration, we then employed the <i>Optuna</i> Python package to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
 </p>
     
-| Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | Num of FFNN Layers | FFNN Hidden Size | Patience | Batch Size |
-|-----------------|----------------|------------------------|--------------|--------------------|------------------|----------|------------|
-|        1        |       48       |           3            |     0.1      |         2          |       512        |    10    |     64     |
+| Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | FFNN (encoder) Hidden Size |   FFNN (last) Hidden Size  | Patience | Batch Size |
+|-----------------|----------------|------------------------|--------------|----------------------------|----------------------------|----------|------------|
+|        1        |       48       |           3            |     0.1      |            512             |            128             |    10    |     64     |
 
 <p align="center">Table 1: Best hyperparamaters for the encoder-only transformer</p>   
 
