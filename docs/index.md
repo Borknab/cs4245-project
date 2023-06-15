@@ -81,7 +81,20 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 
   
 ### New evalution: Soybean yields in Italy
-My text goes here
+<p align="justify">
+Having experimented with alternetive arhitectural solutions to perform soybean yield predictions, we wanted to identify how well can the base model (without changing the training data) do yield predictions for different countries. If the model proved to be accurate for another geographical location, it could potentially then be used to predict crop yield in countries where crop yield data is more scarce. Consequently, we chose to make predictions for Italy, because we could find the respective soybean yields per province, which was essential to quantitavely evaluate the model.
+</p>
+
+<p align="justify">
+To verify whether the model trained on the satellite images for US could make accurate soybean yield predictions for Italian provinces, we had to get images from the same datasets for Italy. Thankfully, it was possible, as the aforementioned MODIS datasets provide a global coverage. The pipeline of getting soybean yield predictions consisted of the following steps (in chronolological order):
+</p>
+
+- Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retreived from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;
+- Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];
+- Converting the yields from quintals per hectar per bushels to acre;
+- Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changed had to be made to be able to use the model on different data;
+- Selecting the model for evaluation. As the datasets provides 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;
+- Evaluating the model's performance with the data for Italy.
 
 ## Results
 
@@ -177,6 +190,8 @@ COmment on how transformer achieve the best performance </i>
 
 ## Evaluating the CNN model on Italy: Quantitative results
 
+TODOTODOTODO
+
 <p align="justify">
 <p align="center">
     <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
@@ -203,4 +218,5 @@ COmment on how transformer achieve the best performance </i>
 ## References
 <p align="justify">
 [1] You, J., Li, X., Low, M., Lobell, D., & Ermon, S. (2017, February). Deep gaussian process for crop yield prediction based on remote sensing data. In Proceedings of the AAAI conference on artificial intelligence (Vol. 31, No. 1).
+[2] OECD. (n.d.). Crops : Areas and production - overall data - provinces. © OECD. http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#
 </p>
