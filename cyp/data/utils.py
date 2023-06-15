@@ -21,12 +21,13 @@ def get_tif_files(image_path):
     return files
 
 
-def load_clean_yield_data(yield_data_filepath):
+# CS4245: mark another columns in case the Italian data is used
+def load_clean_yield_data(yield_data_filepath, for_italy=False):
     """
     Cleans the yield data by making sure any Nan values in the columns we care about
     are removed
     """
-    important_columns = ["Year", "State ANSI", "County ANSI", "Value"]
+    important_columns = ["Province", "Year", "Value"] if for_italy else ["Year", "State ANSI", "County ANSI", "Value"]
     yield_data = pd.read_csv(yield_data_filepath).dropna(
         subset=important_columns, how="any"
     )
