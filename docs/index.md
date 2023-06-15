@@ -139,20 +139,16 @@ To further validate the architectural choices and evaluate their individual cont
 As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
 </p>
 
-<div style="margin: auto; width: 50%; text-align: center">
-<center>
     
 |       Component Ablated      | Average RMSE | Average RMSE (GP) |
 |------------------------------|--------------|-------------------|
-|   None (Base Model)          |     6.30     |     <b>5.77</b>   |
-|   Positional Encoding        |     6.58     |       6.35        |
-|   Input Embedding            |     6.67     |       6.71        |
-|   Attention Pooling          |     6.48     |       6.04        |
+|       None (Base Model)      |     6.30     |    <b>5.77</b>    |
+|      Positional Encoding     |     6.58     |       6.35        |
+|       Input Embedding        |     6.67     |       6.71        |
+|      Attention Pooling       |     6.48     |       6.04        |
 
-</center>
-</div>
 
-<p align="center">Table 2: Ablation study results</p>
+<p>Table 2: Ablation study results</p>
 
 <p align="justify">
 The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
