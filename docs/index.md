@@ -82,18 +82,18 @@ The architecture is highly configurable, allowing us to easily adjust and test k
   
 ### New evalution: Soybean yields in Italy
 <p align="justify">
-Having experimented with alternative architectural solutions to perform soybean yield predictions, we wanted to identify how well can the base model <i>(without changing the training data)</i> do yield predictions for different countries. If the model proved to be accurate for another geographical location, it could then potentially be used to predict crop yields in countries where crop yield data is more scarce. Consequently, we chose to make predictions for Italy, because we could find the respective soybean yields per province, which were essential to quantitatively evaluate the model. Naturally, the model can still output predictions without the ground truth yields, but there is then no way to quantitatively assess the fitness of the model.
+Having experimented with alternative architectural solutions to perform soybean yield predictions, we wanted to identify how well can the base model <i>(without changing the training data)</i> do yield predictions for different countries. If the model proved to be accurate for another geographical location, it could then potentially be used to predict crop yields in countries where crop yield data is more scarce. Consequently, we chose to make predictions for Italy, because we could find the respective soybean yields per province, which were essential to quantitatively evaluate the model. Naturally, the model can still output predictions without the ground truth yields, but then there is no way to quantitatively assess the fitness of the model.
 </p>
 
 <p align="justify">
-To verify whether the model trained on the satellite images for the US could make accurate soybean yield predictions for Italian provinces, we had to get images from the same datasets for Italy. Thankfully, it was possible, as the aforementioned MODIS datasets provide a global coverage. We chose to only fetch data for several years (2010 till 2015), to be able to observe the variability between the model's performance between years. Consequently, the pipeline of getting soybean yield predictions consisted of the following steps (in chronological order):
+To verify whether the model trained on the satellite images for the US could make accurate soybean yield predictions for Italian provinces, we had to get images from the same datasets for Italy. Thankfully, it was possible, as the aforementioned MODIS datasets provide a global coverage. We chose to fetch data for several years (2010 till 2015), to be able to observe the variability between the model's performance between years. Consequently, the pipeline of getting soybean yield predictions consisted of the following steps (in chronological order):
 </p>
 
 <p align="justify">
 <ul>
 <li>Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;</li>
 <li>Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</li>
-<li>Converting the yields from quintals per hectar per bushels to acre;</li>
+<li>Converting the retrieved yields from quintals per hectar per bushels to acre;</li>
 <li>Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changes had to be made to be able to use the model on different data;</li>
 <li>Selecting the model for evaluation. As the authors' codebase provide 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;</li>
 <li>Evaluating the model's performance with the data for Italy.</li>
