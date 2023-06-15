@@ -11,30 +11,27 @@ This blog post presents the results of our reproduction and analysis of the pape
 </p>
 
 <p align="justify">
-In the paper, the authors tackle a pressing global issue - accurately predicting crop yields before harvest, which is vital for food security, especially in developing countries. They introduce a scalable, accurate, and inexpensive method that significantly improves upon traditional techniques. Contrarily to previous approaches that required the use of hand-crafted features (i.e. vegetation indexes), the authors leverage advanced representation learning to let the deep learning model learn the features by itself. Moreover, differently from previous methods, the approach utilized in the paper is particurarly inexpensive as it does not rely on variables related to crop growth (i.e. local weather and soil properties) to model crop yield, which are often imprecise or lacking in developing countries where reliable yield predictions are most needed, instead, only worldwide available and freely accessible remote sensing data (i.e. multispectral satellite images) are used.
+In the paper, the authors tackle a pressing global issue - accurately predicting crop yields before harvest, which is vital for food security, especially in developing countries. They introduce a scalable, accurate, and inexpensive method that significantly improves upon traditional techniques. Contrarily to previous approaches that required the use of hand-crafted features (i.e. vegetation indexes), the authors leverage advanced representation learning to let the deep learning model learn the features by itself. Moreover, differently from previous methods, the approach utilized in the paper is particurarly inexpensive as it does not rely on variables related to crop growth (i.e. local weather and soil properties) to model crop yield, which are often imprecise or lacking in developing countries where reliable yield predictions are most needed. Instead, only worldwide available and freely accessible remote sensing data (i.e. multispectral satellite images) are used.
 In addition to that, the authors propose an innovative dimensionality reduction technique by representing the raw multispectral satellite images as histograms of color pixel counts (using a mean-field approximation to achieve tractability), which makes it possible to train even when training data is scarce. Deep learning model (i.e. 3D-CNNs and LSTMs) are then trained on these histograms to predict crop yields.
-Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The model proposed outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE). With slighly better performance for the 3D CNN architecture compared to the LSTM model.
+Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The proposed model outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE), with slighly better performance for the 3D CNN architecture compared to the LSTM model.
 </p>
 
 <p align="justify">
-Our work focused on first reproducing the results obtained by the authors, using the codebase available at <a href="[https://www.example.com](https://github.com/gabrieltseng/pycrop-yield-prediction)">this</a> github repository, to validate the claims made in the paper. We then expanded on this by experimenting with a Gated Recurrent Unit (GRU) model, on the hypothesis that it could be particularly effective with limited training data. Alongside this, we tested an encoder-only Transformer architecture, given the remarkable performance shown by transformers in modeling long-term dependencies (also) through the self-attention mechanisms. Finally, we aimed to assess the model's transferability and robustness by applying it to a new geography: soybean production in Italy, to verify whether the model can be trained on a country where labeled data is abundant and then be used to predict crop yield in countries where crop yield data is more scarce.
+Our work focused on first reproducing the results obtained by the authors, using the codebase available at <a href="[https://www.example.com](https://github.com/gabrieltseng/pycrop-yield-prediction)">this</a> github repository, to validate the claims made in the paper. We then expanded on this by experimenting with a Gated Recurrent Unit (GRU) model, on the hypothesis that it could be particularly effective with limited training data. Alongside this, we tested an encoder-only Transformer architecture, given the remarkable performance shown by transformers in modeling long-term dependencies (also) through the self-attention mechanisms. Finally, as the model gets trained on the satellite images for United States by default, it was of our interest to identify whether this pre-trained model can generalize to completely new geographies. This could allow us to verify whether the model can be trained on a country where labeled data is abundant (e.g., US) and then be used to predict crop yield in countries where crop yield data is more scarce. For this task, we have chosen to verify the model on the satellite images for Italy.
 </p>
 
 ## Implementation
 ### Results validation/reproduction
 <p align="justify">
-In our attempt to reproduce the results presented in the paper, the first step was collecting the training data, comprising multispectral US-based satellite images, which were retrieved from the Google Earth Engine API. These data, amassing to over 100GB of .tif files, included the images, the masks for distinguishing farmland areas, and other .tif files providing information on the temperature encapsulated in the satellite images.
-</p>
-
-<i>??? Should we discuss in more detail the steps before training (export, preprocess, engineer) and maybe also the satellite images which satellite, which info...???</i>
-
-<p align="justify">
-Considering the sheer volume of data, storing it locally was not a feasible option. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing these cloud services made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
+In our attempt to reproduce the results presented in the paper, the first step was collecting the training data. The data comprised of multispectral US-based satellite images collected from Terra and Aqua satellites with the Moderate Resolution Imaging Spectroradiometer (MODIS). Satellite images were retrieved from the Google Earth Engine API, for the years 2003-2016. These data, amassing to over 100GB of .tif files, included the <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD09A1">surface reflectance images</a>, <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1">the masks for distinguishing farmland areas</a>, and <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD11A2">land surface temperature</a> .tif files.
 </p>
 
 <p align="justify">
-To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders from the GitHub repository to our shared Drive, which we then accessed from Colab. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The code we implemented on Colab was essentially analogous to the run.py file in the repository, with the addition of the training functions for the models we implemented ourselves - GRU and Tranformer. 
-Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
+Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not a possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage were supported for exports https://developers.google.com/earth-engine/guides/exporting. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
+</p>
+
+<p align="justify">
+To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders from the paper authors' GitHub repository to our shared Drive, which we then accessed from Colab. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The code we implemented on Colab was essentially analogous to the run.py file in the repository, with the addition of the training functions for the models we implemented ourselves - GRU and Tranformer, as well as utility funcions to facilitate exports and processing for Italian satellite images. Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
 </p>
 
 ### GRU Architecture
@@ -53,7 +50,7 @@ The following describes the GRU architecture. Note that every timestep of the GR
 </p>
 
 <p align="justify">
-The reason for testing a GRU based network is because it has the potential to outperform an LSTM based network in certain scenarios. This is because a GRU is a simpler architecture. A GRU has two gates, update and reset, which control the flow of information. Therefore GRUs can be computationally more efficient and easier to train. Therefore GRUs exhibit better performance on tasks that require modeling short-term dependencies. Due to having fewer parameters, GRUs can capture important patterns in data quicker, enabling faster learning and better generalization.
+The reason for testing a GRU based network is because it has the potential to outperform an LSTM based network in certain scenarios. This is because a GRU is a simpler architecture. A GRU has two gates, update and reset, which control the flow of information. Therefore, GRUs can be computationally more efficient and easier to train Consequently, GRUs exhibit better performance on tasks that require modeling short-term dependencies. Due to having fewer parameters, GRUs can capture important patterns in data quicker, enabling faster learning and better generalization.
 </p>
 
 ### Tranformer Architecture
@@ -84,25 +81,11 @@ The architecture is highly configurable, allowing us to easily adjust and test k
 
   
 ### New evalution: Soybean yields in Italy
-<p align="justify">
-<p align="center">
-    <img src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
-    <p align="center">Figure x: Changes in errors between the prediced crop yields and the real crop yields per Italian province from 2010 till 2015</p>
-</p>
-</p>
-
-| Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
-|------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
-| 2010 | 32.2186   | 25.64719 | 320.03386         | 4.60165   | 3.89281  | 15.72162          | 0.002       | 0.00277    | 0.58918             | 26.92416    | 22.1686    | 35.3953             |
-| 2011 | 42.21827  | 42.22494 | 320.03386         | 5.48281   | 5.09828  | 15.38811          | 0.00097     | 0.0092     | 2.17802             | 27.65279    | 25.32015   | 52.50981            |
-| 2012 | 9.04276   | 40.653   | 510.69951         | 2.28145   | 4.95761  | 18.62258          | 0.00003     | 0.00076    | 1.8417              | 22.43994    | 28.50721   | 66.13747            |
-| 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
-| 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
-| 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
+My text goes here
 
 ## Results
 
-### Hyperparamater optimizations
+### Transformer and GRU: Hyperparamater optimizations
 <p align="justify">
 Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
 </p>
@@ -127,7 +110,7 @@ The discovery that the optimal configuration leaned towards lower values for var
 </p>
 
 <p align="justify">
-An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
 </p>
 
 #### GRU 
@@ -135,7 +118,7 @@ An interesting observation from our experiments was the efficient training time 
 hyperparams..
 </p>
 
-### Quantitative results
+### Transformer and GRU: Quantitative results
 <p align="justify">
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and ropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
@@ -157,6 +140,25 @@ To compare the performance of the models we have plotted the RMSE of the models 
 
 <i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
 COmment on how transformer achieve the best performance </i>
+
+## Evaluating the model on Italy: Quantitative results
+
+<p align="justify">
+<p align="center">
+    <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
+    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015</p>
+</p>
+</p>
+
+| Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
+|------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
+| 2010 | 32.2186   | 25.64719 | 320.03386         | 4.60165   | 3.89281  | 15.72162          | 0.002       | 0.00277    | 0.58918             | 26.92416    | 22.1686    | 35.3953             |
+| 2011 | 42.21827  | 42.22494 | 320.03386         | 5.48281   | 5.09828  | 15.38811          | 0.00097     | 0.0092     | 2.17802             | 27.65279    | 25.32015   | 52.50981            |
+| 2012 | 9.04276   | 40.653   | 510.69951         | 2.28145   | 4.95761  | 18.62258          | 0.00003     | 0.00076    | 1.8417              | 22.43994    | 28.50721   | 66.13747            |
+| 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
+| 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
+| 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
+<p align="center">Table 3: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
 
 ## Discussion and Conclusion
 <p align="justify">
