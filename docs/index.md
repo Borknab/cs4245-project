@@ -96,7 +96,7 @@ For the Transformer, we started with a manual selection of values for embedding 
 </p>
 
 <p align="justify">
-Taking the obtained initial results into consideration, we then employed the <i>Optuna</i> Python package to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 256, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
+Taking the obtained initial results into consideration, we then employed the <i>Optuna</i> Python package to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 128, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
 </p>
     
 | Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | FFNN (encoder) Hidden Size |   FFNN (last) Hidden Size  | Patience | Batch Size |
@@ -110,7 +110,43 @@ The discovery that the optimal configuration leaned towards lower values for var
 </p>
 
 <p align="justify">
-An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the N-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the <b>!!!N-hour!!!</b> training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+</p>
+
+##### Ablation study 
+<p align="justify">
+To further validate the architectural choices and evaluate their individual contributions to the final performance of our model, we performed an ablation study. In the study, we systematically remove or replace certain parts of the model and measure the impact on performance. We ablated on positional encoding, input embedding and attention pooling, as they are essential components of our encoder-only Transformer architecture.
+</p>
+
+<p align="justify">
+As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
+</p>
+
+    
+|       Component Ablated      | Average RMSE | Average RMSE (GP) |
+|------------------------------|--------------|-------------------|
+|       None (Base Model)      |     6.30     |    <b>5.77</b>    |
+|      Positional Encoding     |     6.58     |       6.35        |
+|       Input Embedding        |     6.67     |       6.71        |
+|      Attention Pooling       |     6.48     |       6.04        |
+
+
+<p>Table 2: Ablation study results</p>
+
+<p align="justify">
+The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
+</p>
+
+<p align="justify">
+When we removed input embedding and directly fed the input into the Transformer encoder (with input dimension = 288), we also observed a performance drop. The input embedding layer transforms the high-dimensional raw input into a lower-dimensional space where the Transformer can learn more effectively. Without this layer, the model was dealing directly with high-dimensional data, which likely made the training process more challenging and less effective.
+</p>
+
+<p align="justify">
+Replacing attention pooling with average pooling resulted in another performance drop. The attention mechanism in the pooling layer allows the model to focus on more important aspects of the input sequence while predicting the crop yield. With average pooling, all elements in the sequence were treated with equal importance, leading to a loss of this valuable selective attention capability.
+</p>
+
+<p align="justify">
+In conclusion, each of these ablations resulted in a degraded performance, indicating that each component – positional encoding, input embedding, and attention pooling – contributes significantly to the success of our model. The decrease in performance when removing any of these elements demonstrates their importance in the architecture and validates our initial architectural choices.
 </p>
 
 #### GRU 
