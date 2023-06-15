@@ -122,16 +122,14 @@ To further validate the architectural choices and evaluate their individual cont
 As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
 </p>
 
-<center>
 |       Component Ablated      | Average RMSE | Average RMSE (GP) |
 |------------------------------|--------------|-------------------|
 |       None (Base Model)      |     6.30     |    <b>5.77</b>    |
 |      Positional Encoding     |     6.58     |       6.35        |
 |       Input Embedding        |     6.67     |       6.71        |
 |      Attention Pooling       |     6.48     |       6.04        |
-</center>
 
-<p align="center">Table 2: Ablation study results</p>
+<p>Table 2: Ablation study results</p>
 
 <p align="justify">
 The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
@@ -159,7 +157,6 @@ hyperparams..
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and ropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-<center>
 |  Year  | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
 |--------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
 |  2009  | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   |     4.93    |       4.78       |
@@ -171,7 +168,6 @@ To compare the performance of the models we have plotted the RMSE of the models 
 |  2015  | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   |     6.76    |       5.83       |
 |        |      |           |        |             |     |          |             |                  |
 |**Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   |     6.30    |     **5.77**     |
-</center>
 
 <p align="center">Table 2: RMSE for the different architectures, with and without Gaussian Processses</p>
 
@@ -188,7 +184,6 @@ COmment on how transformer achieve the best performance </i>
 </p>
 </p>
 
-<div align="center">
 | Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
 |------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
 | 2010 | 32.2186   | 25.64719 | 320.03386         | 4.60165   | 3.89281  | 15.72162          | 0.002       | 0.00277    | 0.58918             | 26.92416    | 22.1686    | 35.3953             |
@@ -197,7 +192,6 @@ COmment on how transformer achieve the best performance </i>
 | 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
 | 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
 | 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
-</div align="center">
 
 <p align="center">Table 3: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
 
