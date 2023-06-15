@@ -131,7 +131,7 @@ As shown in Table 2 below, the removal or replacement of any of these components
 |      Attention Pooling       |     6.48     |       6.04        |
 
 
-<p>Table 2: Ablation study results</p>
+<p align="center">Table 2: Ablation study results</p>
 
 <p align="justify">
 The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
@@ -177,7 +177,7 @@ To compare the performance of the models we have plotted the RMSE of the models 
 <i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
 COmment on how transformer achieve the best performance </i>
 
-## Evaluating the model on Italy: Quantitative results
+## Evaluating the CNN model on Italy: Quantitative results
 
 <p align="justify">
 <p align="center">
@@ -194,6 +194,7 @@ COmment on how transformer achieve the best performance </i>
 | 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
 | 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
 | 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
+
 <p align="center">Table 3: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
 
 ## Discussion and Conclusion
