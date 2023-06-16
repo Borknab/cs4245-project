@@ -202,7 +202,16 @@ In conclusion, each of these ablations resulted in a degraded performance, indic
 
 #### GRU 
 <p align="justify">
-hyperparams..
+Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Based on the original parameters, *Optuna* was used to perform Bayesian hyperparamter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
+</p>
+
+|  Configuration  |  Hidden Size  | Dropout | Batch Size | Learning Rate | Weight Decay |
+|-----------------|---------------|---------|------------|---------------|--------------|
+|  Original  | 128 |  0.75  |  32  |  0.001  |  0  |
+|  Tuned  | 1248 |  0.10  |  128  |  0.0005  |  0.10  |
+
+<p align="justify">
+The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased.
 </p>
 
 ### Transformer and GRU: Quantitative results
@@ -252,7 +261,19 @@ TODOTODOTODO
 
 ## Discussion and Conclusion
 <p align="justify">
-...
+In this project report, we reproduced and analyzed the paper "Deep Gaussian Process for Crop Yield Prediction Based on Remote Sensing Data" by J. You, X. Li, M. Low, D. Lobell, S. Ermon. The paper introduces a scalable and accurate method for predicting crop yields using deep learning and remote sensing data. Our work focused on reproducing the results presented in the paper and expanding on them by experimenting with alternative models and evaluating the model's performance on a different geographical location.
+</p>
+
+<p align="justify">
+We successfully implemented two new models, a GRU based model and transformer based model. Both models were optimized using hyperparameter optimization techniques. The GRU model showed results on par with the orignal 3d CNN and LSTM models from the paper. The transformer model outperformed all other models when a gaussian process was also used.
+</p>
+
+<p align="justify">
+We then evaluated the model's performance on predicting soybean yields in Italy using satellite images for the years 2010-2015 and actual crop yield data obtained from The Italian National Institute of Statistics. The model, trained on US satellite images, showed potential for generalization to different geographies, providing accurate predictions for Italian provinces. This suggests that the model can be trained on countries with abundant labeled data and used to predict crop yields in regions where such data is scarce.
+</p>
+
+<p align="justify">
+Overall, our reproduction and analysis of the paper's methodology and results validate the authors' claims and demonstrate the effectiveness of deep learning and remote sensing data in predicting crop yields. The alternative models we implemented offer potential improvements and insights for future research in this field. The successful evaluation on Italian data further emphasizes the model's potential for broader applications and its contribution to addressing global food security challenges.
 </p>
 
 ## References
