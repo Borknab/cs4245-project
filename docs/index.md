@@ -100,7 +100,7 @@ To verify whether the model trained on the satellite images for the US could mak
 
 - <p align="justify">Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;</p>
 
-- <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
+- <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's accuracy. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
 
 - <p align="justify">Converting the retrieved yields from quintals per hectare per bushels to acre;</p>
   
@@ -108,7 +108,7 @@ To verify whether the model trained on the satellite images for the US could mak
   
 - <p align="justify">Selecting the model for evaluation. As the authors' codebase provide 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;</p>
   
-- <p align="justify">Evaluating the model's performance with the data for Italy.</p>
+- <p align="justify">Evaluating the model's accuracy with the data for Italy.</p>
 
 
 
