@@ -1,5 +1,5 @@
 <style>
-  td, th {
+  td {
     text-align: center;
   }
 </style>
@@ -19,22 +19,21 @@ This blog post presents the results of our reproduction and analysis of the pape
 
 <p align="justify">
 In the paper, the authors tackle a pressing global issue - accurately predicting crop yields before harvest, which is vital for food security, especially in developing countries. They introduce a scalable, accurate, and inexpensive method that significantly improves upon traditional techniques. Contrarily to previous approaches that required the use of hand-crafted features (i.e. vegetation indexes), the authors leverage advanced representation learning to let the deep learning model learn the features by itself. Moreover, differently from previous methods, the approach utilized in the paper is particurarly inexpensive as it does not rely on variables related to crop growth (i.e. local weather and soil properties) to model crop yield, which are often imprecise or lacking in developing countries where reliable yield predictions are most needed. Instead, only worldwide available and freely accessible remote sensing data (i.e. multispectral satellite images) are used.
-In addition to that, the authors propose an innovative dimensionality reduction technique by representing the raw multispectral satellite images as histograms of color pixel counts (using a mean-field approximation to achieve tractability), which makes it possible to train even when training data is scarce. Deep learning model (i.e. 3D-CNNs and LSTMs) are then trained on these histograms to predict crop yields.
-Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The proposed model outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE), with slighly better performance for the 3D CNN architecture compared to the LSTM model.
+In addition to that, the authors propose an innovative dimensionality reduction technique by representing the raw multispectral satellite images as histograms of color pixel counts (using a mean-field approximation to achieve tractability), which makes it possible to train even when training data is scarce. Deep learning models (i.e. 3D-CNNs and LSTMs) are then trained on these histograms to predict crop yields. Namely, they regress a single crop yield metric - bushels per acre, per region of interest. Finally, the authors utilize Gaussian Processes to model spatiotemporal dependencies between datapoints (i.e. common soil properties between close crops). To evaluate the model they predict country-level soybean yield in the United States. The proposed model outperforms traditional remote-sensing based methods by 30% in terms of Root Mean Squared Error (RMSE), with slighly better performance for the 3D CNN architecture compared to the LSTM model.
 </p>
 
 <p align="justify">
-Our work focused on first reproducing the results obtained by the authors, using the codebase available at <a href="[https://www.example.com](https://github.com/gabrieltseng/pycrop-yield-prediction)">this</a> github repository, to validate the claims made in the paper. We then expanded on this by experimenting with a Gated Recurrent Unit (GRU) model, on the hypothesis that it could be particularly effective with limited training data. Alongside this, we tested an encoder-only Transformer architecture, given the remarkable performance shown by transformers in modeling long-term dependencies (also) through the self-attention mechanisms. Finally, as the model gets trained on the satellite images for United States by default, it was of our interest to identify whether this pre-trained model can generalize to completely new geographies. This could allow us to verify whether the model can be trained on a country where labeled data is abundant (e.g., US) and then be used to predict crop yield in countries where crop yield data is more scarce. For this task, we have chosen to verify the model on the satellite images for Italy.
+Our work focused on first reproducing the results obtained by the authors, using the codebase available at <a href="[https://www.example.com](https://github.com/gabrieltseng/pycrop-yield-prediction)">this</a> github repository, to validate the claims made in the paper. We then expanded on this by experimenting with a Gated Recurrent Unit (GRU) model, on the hypothesis that it could be particularly effective with limited training data. Alongside this, we tested an encoder-only Transformer architecture, given the remarkable performance shown by transformers in modeling long-term dependencies (also) through the self-attention mechanisms. Finally, as the model gets trained on the satellite images for United States by default, it was of our interest to identify whether this pre-trained model can generalize to completely new geographies. This could allow us to verify whether the model can be trained on a country where labeled data are abundant (e.g., US) and then be used to predict crop yield in countries where crop yield data is more scarce. For this task, we have chosen to verify the model on the satellite images for Italy.
 </p>
 
 ## Implementation
 ### Results validation/reproduction
 <p align="justify">
-In our attempt to reproduce the results presented in the paper, the first step was collecting the training data. The data comprised of multispectral US-based satellite images collected from Terra and Aqua satellites with the Moderate Resolution Imaging Spectroradiometer (MODIS). Satellite images were retrieved from the Google Earth Engine API, for the years 2009-2016. These data, amassing to over 100GB of .tif files, included the <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD09A1">surface reflectance images</a>, <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1">the masks for distinguishing farmland areas</a>, and <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD11A2">land surface temperature</a> .tif files.
+In our attempt to reproduce the results presented in the paper, the first step was collecting the training data. The data comprised of multispectral US-based satellite images collected from Terra and Aqua satellites with the Moderate Resolution Imaging Spectroradiometer (MODIS). Satellite images were retrieved from the Google Earth Engine API, for the years 2003-2016. These data, amassing to over 100GB of .tif files, included the <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD09A1">surface reflectance images</a>, <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1">the masks for distinguishing farmland areas</a>, and <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD11A2">land surface temperature</a> .tif files.
 </p>
 
 <p align="justify">
-Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not a possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage were supported for exports https://developers.google.com/earth-engine/guides/exporting. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
+Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not a possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage <a href="https://developers.google.com/earth-engine/guides/exporting">were supported for exports</a>. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
 </p>
 
 <p align="justify">
@@ -105,29 +104,24 @@ To verify whether the model trained on the satellite images for the US could mak
 
 - <p align="justify">Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;</p>
 
-- <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
+- <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's accuracy. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
 
-- <p align="justify">Converting the retrieved yields from quintals per hectar per bushels to acre;</p>
+- <p align="justify">Converting the retrieved yields from quintals per hectare per bushels to acre;</p>
   
 - <p align="justify">Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changes had to be made to be able to use the model on different data;</p>
   
 - <p align="justify">Selecting the model for evaluation. As the authors' codebase provide 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;</p>
   
-- <p align="justify">Evaluating the model's performance with the data for Italy.</p>
+- <p align="justify">Evaluating the model's accuracy with the data for Italy.</p>
 
 
 
 
 ## Results
 
-### Transformer and GRU: Hyperparamater optimizations
+### Tranformer 
 <p align="justify">
-Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
-</p>
-
-#### Tranformer 
-<p align="justify">
-For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
+Once the Transformer model was implemented codewise, we tested it and worked on the hyperparamaters, we started by manually testing and selecting a range of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
 </p>
 
 <p align="justify">
@@ -145,10 +139,10 @@ The discovery that the optimal configuration leaned towards lower values for var
 </p>
 
 <p align="justify">
-An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the <b>!!!N-hour!!!</b> training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the around 1-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
 </p>
 
-##### Ablation study 
+#### Ablation study 
 <p align="justify">
 To further validate the architectural choices and evaluate their individual contributions to the final performance of our model, we performed an ablation study. In the study, we systematically remove or replace certain parts of the model and measure the impact on performance. We ablated on positional encoding, input embedding and attention pooling, as they are essential components of our encoder-only Transformer architecture.
 </p>
@@ -204,15 +198,39 @@ Replacing attention pooling with average pooling resulted in another performance
 In conclusion, each of these ablations resulted in a degraded performance, indicating that each component – positional encoding, input embedding, and attention pooling – contributes significantly to the success of our model. The decrease in performance when removing any of these elements demonstrates their importance in the architecture and validates our initial architectural choices.
 </p>
 
-#### GRU 
+### GRU 
 <p align="justify">
 Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Based on the original parameters, *Optuna* was used to perform Bayesian hyperparamter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
 </p>
 
-|  Configuration  |  Hidden Size  | Dropout | Batch Size | Learning Rate | Weight Decay |
-|-----------------|---------------|---------|------------|---------------|--------------|
-|  Original  | 128 |  0.75  |  32  |  0.001  |  0  |
-|  Tuned  | 1248 |  0.10  |  128  |  0.0005  |  0.10  |
+<table align="center" style="display: revert-layer; width: 70%;">
+  <tr>
+    <th>Configuration</th>
+    <th>Hidden Size</th>
+    <th>Dropout</th>
+    <th>Batch Size</th>
+    <th>Learning Rate</th>
+    <th>Weight Decay</th>
+  </tr>
+  <tr>
+    <td>Original</td>
+    <td>128</td>
+    <td>0.75</td>
+    <td>32</td>
+    <td>0.001</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Tuned</td>
+    <td>1248</td>
+    <td>0.10</td>
+    <td>128</td>
+    <td>0.0005</td>
+    <td>0.10</td>
+  </tr>
+</table>
+
+<p align="center">Table 3: Hyperparameters from the original LSTM model and the tuned GRU model</p>
 
 <p align="justify">
 The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased. Furthermore, the decrease in dropout suggests that too much information was lost when using high dropout. This also suggests that information which was contained in the cell state was indeed lost, and the dropout needed to be reduced as a consequence.
@@ -223,45 +241,251 @@ The main differnce between the two configuration is the size of the hidden layer
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-|  Year  | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
-|--------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
-|  2009  | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   |     4.93    |       4.78       |
-|  2010  | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   |     6.71    |       6.45       |
-|  2011  | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   |     5.66    |       5.56       |
-|  2012  | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   |     6.68    |       6.14       |
-|  2013  | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   |     6.65    |       5.89       |
-|  2014  | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   |     6.77    |       5.78       |
-|  2015  | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   |     6.76    |       5.83       |
-|        |      |           |        |             |     |          |             |                  |
-|**Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   |     6.30    |     **5.77**     |
+<table align="center" style="display: revert-layer; width: 93%;">
+  <tr>
+    <th>Year</th>
+    <th>LSTM</th>
+    <th>LSTM + GP</th>
+    <th>3d CNN</th>
+    <th>3d CNN + GP</th>
+    <th>GRU</th>
+    <th>GRU + GP</th>
+    <th>Transformer</th>
+    <th>Transformer + GP</th>
+  </tr>
+  <tr>
+    <td>2009</td>
+    <td>5.18</td>
+    <td>6.37</td>
+    <td>6.07</td>
+    <td>5.56</td>
+    <td>5.75</td>
+    <td>6.67</td>
+    <td>4.93</td>
+    <td>4.78</td>
+  </tr>
+  <tr>
+    <td>2010</td>
+    <td>7.27</td>
+    <td>7.30</td>
+    <td>6.75</td>
+    <td>7.03</td>
+    <td>7.45</td>
+    <td>6.10</td>
+    <td>6.71</td>
+    <td>6.45</td>
+  </tr>
+  <tr>
+    <td>2011</td>
+    <td>6.82</td>
+    <td>6.72</td>
+    <td>6.77</td>
+    <td>6.40</td>
+    <td>6.26</td>
+    <td>5.83</td>
+    <td>5.66</td>
+    <td>5.56</td>
+  </tr>
+  <tr>
+    <td>2012</td>
+    <td>7.01</td>
+    <td>6.46</td>
+    <td>5.91</td>
+    <td>5.72</td>
+    <td>5.72</td>
+    <td>5.46</td>
+    <td>6.68</td>
+    <td>6.14</td>
+  </tr>
+  <tr>
+    <td>2013</td>
+    <td>5.91</td>
+    <td>5.83</td>
+    <td>6.41</td>
+    <td>6.00</td>
+    <td>6.51</td>
+    <td>5.98</td>
+    <td>6.65</td>
+    <td>5.89</td>
+  </tr>
+  <tr>
+    <td>2014</td>
+    <td>5.99</td>
+    <td>4.65</td>
+    <td>5.28</td>
+    <td>4.87</td>
+    <td>5.86</td>
+    <td>5.84</td>
+    <td>6.77</td>
+    <td>5.78</td>
+  </tr>
+  <tr>
+    <td>2015</td>
+    <td>6.14</td>
+    <td>5.13</td>
+    <td>6.18</td>
+    <td>5.36</td>
+    <td>6.59</td>
+    <td>5.72</td>
+    <td>6.76</td>
+    <td>5.83</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Avg</th>
+    <td>6.33</td>
+    <td>6.06</td>
+    <td>6.19</td>
+    <td>5.84</td>
+    <td>6.30</td>
+    <td>5.94</td>
+    <td>6.30</td>
+    <th><strong>5.77</strong></th>
+  </tr>
+</table>
 
-<p align="center">Table 3: RMSE for the different architectures, with and without Gaussian Processses</p>
+<p align="center">Table 4: RMSE for the different architectures, with and without Gaussian Processses</p>
+
+<p align="justify">
+The results of our experiments revealed the superiority of the Transformer model in terms of both performance and efficiency. The Transformer outperformed other architectures, achieving the lowest average RMSE of 5.77 when combined with Gaussian Processes. Despite its remarkable performance, the Transformer model required less than 30 minutes of training time, less than the time taken by the CNN and LSTM models. This high efficiency may be attributed to the Transformer's self-attention mechanism which enables the model to focus on the most relevant parts of the input sequence for its predictions. The GRU model exhibited decent performance but was outperformed by the Transformer. Overall the results suggest that the Transformer architecture's capability of handling sequence data and its efficient training time render it particularly suitable for this application domain, possibly more than the models utilized by the authors (LSTM and 3D CNN).
+</p>
 
 
-<i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
-COmment on how transformer achieve the best performance </i>
 
-## Evaluating the CNN model on Italy: Quantitative results
+### Evaluating the CNN model on Italy: Quantitative results
 
-TODOTODOTODO
+<p align="justify">
+After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's accuracy, it became evident that the model made significantly worse predictions for Italy compared to the unchanged US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
+</p>
+
+<p align="justify">
+Figure 3 presents a visualization illustrating the changes in errors over time by depicting the disparities between predicted and actual soybean yields. Adjacent to the figure, a colorbar indicates the assigned colors for errors below or above 5, 10, or 15 bushels per acre. The analysis reveals that numerous provinces exhibit underpredicted crop yields. Conversely, certain provinces, like Pavia, consistently achieve more accurate predictions, potentially due to the similarity between their satellite images and the training data used for the US. Overall, the model's predictions are too far off most of the time, rendering the model unreliable for accurate yield predictions in Italy. These findings suggest that the model may face challenges in generalizing to other countries as well.
+</p>
+
+<table align="center" style="display: revert-layer; width: 93%;">
+  <tr>
+    <th>Year</th>
+    <th>US Test RMSE</th>
+    <th>IT Validation RMSE</th>
+    <th>US Test MAE</th>
+    <th>IT Validation MAE</th>
+    <th>US Test MinAD</th>
+    <th>IT Validation MinAD</th>
+    <th>US Test MaxAD</th>
+    <th>IT Validation MaxAD</th>
+  </tr>
+  <tr>
+    <td>2010</td>
+    <td>6.75</td>
+    <td>17.89</td>
+    <td>3.89</td>
+    <td>15.72</td>
+    <td>0</td>
+    <td>0.59</td>
+    <td>22.17</td>
+    <td>35.4</td>
+  </tr>
+  <tr>
+    <td>2011</td>
+    <td>6.77</td>
+    <td>17.89</td>
+    <td>5.1</td>
+    <td>15.39</td>
+    <td>0.01</td>
+    <td>2.18</td>
+    <td>25.32</td>
+    <td>52.51</td>
+  </tr>
+  <tr>
+    <td>2012</td>
+    <td>5.91</td>
+    <td>22.6</td>
+    <td>4.96</td>
+    <td>18.62</td>
+    <td>0</td>
+    <td>1.84</td>
+    <td>28.51</td>
+    <td>66.14</td>
+  </tr>
+  <tr>
+    <td>2013</td>
+    <td>6.41</td>
+    <td>16.12</td>
+    <td>5.18</td>
+    <td>12.13</td>
+    <td>0.02</td>
+    <td>0.01</td>
+    <td>23.06</td>
+    <td>54.92</td>
+  </tr>
+  <tr>
+    <td>2014</td>
+    <td>5.28</td>
+    <td>17.11</td>
+    <td>3.43</td>
+    <td>14.07</td>
+    <td>0</td>
+    <td>1.21</td>
+    <td>26.91</td>
+    <td>36.44</td>
+  </tr>
+  <tr>
+    <td>2015</td>
+    <td>6.18</td>
+    <td>22.03</td>
+    <td>5.18</td>
+    <td>18.21</td>
+    <td>0.03</td>
+    <td>0.03</td>
+    <td>22.77</td>
+    <td>49.52</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Avg.</th>
+    <td>6.19</td>
+    <td>18.94</td>
+    <td>4.62</td>
+    <td>15.69</td>
+    <td>0.01</td>
+    <td>0.98</td>
+    <td>24.79</td>
+    <td>49.16</td>
+  </tr>
+</table>
+
+
+<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented for Italy (IT) and the default US test set: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
 
 <p align="justify">
 <p align="center">
-    <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
-    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015</p>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
+      <img width="60" style="margin-left: 30px; margin-bottom: 75px;" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/colorbar.png"/><br>
+    </div>
+    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015. Red colors indicate underprediction of soybean yields, while blue colors indicate overprediction.</p>
 </p>
 </p>
-
-| Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
-|------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
-| 2010 | 32.2186   | 25.64719 | 320.03386         | 4.60165   | 3.89281  | 15.72162          | 0.002       | 0.00277    | 0.58918             | 26.92416    | 22.1686    | 35.3953             |
-| 2011 | 42.21827  | 42.22494 | 320.03386         | 5.48281   | 5.09828  | 15.38811          | 0.00097     | 0.0092     | 2.17802             | 27.65279    | 25.32015   | 52.50981            |
-| 2012 | 9.04276   | 40.653   | 510.69951         | 2.28145   | 4.95761  | 18.62258          | 0.00003     | 0.00076    | 1.8417              | 22.43994    | 28.50721   | 66.13747            |
-| 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
-| 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
-| 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
-
-<p align="center">Table 4: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
 
 ## Discussion and Conclusion
 <p align="justify">
@@ -273,18 +497,18 @@ We successfully implemented two new models, a GRU based model and transformer ba
 </p>
 
 <p align="justify">
-We then evaluated the model's performance on predicting soybean yields in Italy using satellite images for the years 2010-2015 and actual crop yield data obtained from The Italian National Institute of Statistics. The model, trained on US satellite images, showed potential for generalization to different geographies, providing accurate predictions for Italian provinces. This suggests that the model can be trained on countries with abundant labeled data and used to predict crop yields in regions where such data is scarce.
+We then evaluated the model's performance on predicting soybean yields in Italy using satellite images for the years 2010-2015 and actual crop yield data obtained from The Italian National Institute of Statistics. The model, trained on US satellite images, did not provide accurate predictions for Italian provinces. This finding suggests the presence of underlying geographical differences between the US and Italy, which impede the effectiveness of the model trained on US data in making reliable predictions for Italy. As a result, the model may encounter difficulties in generalizing to other countries as well, thereby limiting its usefulness in regions with limited agricultural data. The model would likely have to be retrained whenever predictions for a new country are needed. However, further evaluations are necessary to draw more definitive conclusions.
 </p>
 
 <p align="justify">
-Overall, our reproduction and analysis of the paper's methodology and results validate the authors' claims and demonstrate the effectiveness of deep learning and remote sensing data in predicting crop yields. The alternative models we implemented offer potential improvements and insights for future research in this field. The successful evaluation on Italian data further emphasizes the model's potential for broader applications and its contribution to addressing global food security challenges.
+Overall, our reproduction and analysis of the paper's methodology and results validate the authors' claims and demonstrate the effectiveness of deep learning and remote sensing data in predicting crop yields. The alternative models we implemented offer potential improvements and insights for future research in this field. Lastly, based on the evaluation of Italian data, it is evident that the CNN model needs to be retrained using country-specific data to ensure accurate predictions for each respective country. However, despite this limitation, the model holds promising potential for broader applications and offers a significant contribution to addressing global food security challenges.
 </p>
 
 ## References
 <p align="justify">
-[1] You, J., Li, X., Low, M., Lobell, D., & Ermon, S. (2017, February). Deep gaussian process for crop yield prediction based on remote sensing data. In Proceedings of the AAAI conference on artificial intelligence (Vol. 31, No. 1).
+[1] You, J., Li, X., Low, M., Lobell, D., & Ermon, S. (2017, February). Deep gaussian process for crop yield prediction based on remote sensing data. In Proceedings of the AAAI conference on artificial intelligence (Vol. 31, No. 1).<br/>
 
-[2] OECD. (n.d.). Crops : Areas and production - overall data - provinces. © OECD. http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#
+[2] OECD. (n.d.). Crops : Areas and production - overall data - provinces. © OECD. http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#j<br/>
 
 [3] Chung, Junyoung & Gulcehre, Caglar & Cho, KyungHyun & Bengio, Y.. (2014). Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling. 
 </p>
