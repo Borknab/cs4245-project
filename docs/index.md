@@ -23,7 +23,7 @@ Our work focused on first reproducing the results obtained by the authors, using
 ## Implementation
 ### Results validation/reproduction
 <p align="justify">
-In our attempt to reproduce the results presented in the paper, the first step was collecting the training data. The data comprised of multispectral US-based satellite images collected from Terra and Aqua satellites with the Moderate Resolution Imaging Spectroradiometer (MODIS). Satellite images were retrieved from the Google Earth Engine API, for the years 2003-2016. These data, amassing to over 100GB of .tif files, included the <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD09A1">surface reflectance images</a>, <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1">the masks for distinguishing farmland areas</a>, and <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD11A2">land surface temperature</a> .tif files.
+In our attempt to reproduce the results presented in the paper, the first step was collecting the training data. The data comprised of multispectral US-based satellite images collected from Terra and Aqua satellites with the Moderate Resolution Imaging Spectroradiometer (MODIS). Satellite images were retrieved from the Google Earth Engine API, for the years 2009-2016. These data, amassing to over 100GB of .tif files, included the <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD09A1">surface reflectance images</a>, <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1">the masks for distinguishing farmland areas</a>, and <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD11A2">land surface temperature</a> .tif files.
 </p>
 
 <p align="justify">
@@ -71,7 +71,7 @@ Our encoder-only Transformer model is made of several components. First, an embe
 </p>
 
 <p align="justify">
-The architecture is highly configurable, allowing us to easily adjust and test key parameters as for instance the number of attention heads and encoder layers. Through experimentation, we found that due to the limited complexity of the input data, a low dropout rate, fewer heads and encoder layers, and a small hidden sizes for the feed forward neural networks (FFNNs) yielded the best performance. More on this in the "Result" section.
+The architecture is highly configurable, allowing us to easily adjust and test key parameters as for instance the number of attention heads and encoder layers. Through experimentation, we found that due to the limited complexity of the input data, a low dropout rate, fewer heads and encoder layers, and a small hidden sizes for the feed forward neural networks (FFNNs) yielded the best performance. More on this in the <b>Results</b> section.
 </p>
 
 <p align="center">
@@ -171,7 +171,7 @@ hyperparams..
 
 ### Transformer and GRU: Quantitative results
 <p align="justify">
-To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and ropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
+To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
 |  Year  | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
@@ -186,7 +186,7 @@ To compare the performance of the models we have plotted the RMSE of the models 
 |        |      |           |        |             |     |          |             |                  |
 |**Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   |     6.30    |     **5.77**     |
 
-<p align="center">Table 2: RMSE for the different architectures, with and without Gaussian Processses</p>
+<p align="center">Table 3: RMSE for the different architectures, with and without Gaussian Processses</p>
 
 
 <i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
@@ -212,7 +212,7 @@ TODOTODOTODO
 | 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
 | 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
 
-<p align="center">Table 3: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
+<p align="center">Table 4: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
 
 ## Discussion and Conclusion
 <p align="justify">
