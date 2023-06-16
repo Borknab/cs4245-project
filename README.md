@@ -10,9 +10,9 @@ We replicate the original model's results first, then apply modifications by rep
 
 We utilized the code available at [this](https://github.com/gabrieltseng/pycrop-yield-prediction) Github repo, in our repository only the source code is available (`cyp` folder), check the original codebase for all the additional folders and files. We tagged with `[CS4245]` all the changes we made to the original code.
 
-To evaluate the model on Italian provinces, we had to make several changes to the existing codebase (which are also tagged with `[CS4245]`). Additionally, the `italy_processing_plotting/` directory contains other files and scripts that were used to get the predictions:
+To evaluate the model on Italian provinces, we had to make multiple other changes to the existing codebase (which are also tagged with `[CS4245]`). Additionally, the `italy_processing_plotting/` directory contains other files and scripts that were used to get the predictions:
 - `convert_csv.py` is the script for converting the data from The Italian National Institute of Statistics to the format expected by the paper authors' codebase;
-- `it_data.csv` contains the [data](http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#j) exported from The Italian National Institute of Statistics. Namely, the file contains soybean yields per province, for the years 2010-2015;
+- `it_data.csv` contains the [data](http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#j) exported from **The Italian National Institute of Statistics**. Namely, the file contains soybean yields per province, for the years 2010-2015;
 - `it_yield_data.csv` contains the output from running `convert_csv.py`;
 - `provinces_plot.py` is the script for generating Italy error map that can be seen in our [blog post](https://borknab.github.io/cs4245-project/).
 
