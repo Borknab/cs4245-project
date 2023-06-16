@@ -362,7 +362,7 @@ The results of our experiments revealed the superiority of the Transformer model
 ## Evaluating the CNN model on Italy: Quantitative results
 
 <p align="justify">
-After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data (IT Validation metrics), it became evident that the model performed significantly worse compared to the default US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
+After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data, it became evident that the model performed significantly worse compared to the default US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
 </p>
 
 <p align="justify">
@@ -472,7 +472,7 @@ Figure 3 presents a visualization illustrating the changes in errors over time b
 </table>
 
 
-<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
+<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD) for Italy (IT) and the default US test set</p>
 
 <p align="justify">
 <p align="center">
