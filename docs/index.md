@@ -89,16 +89,24 @@ Having experimented with alternative architectural solutions to perform soybean 
 To verify whether the model trained on the satellite images for the US could make accurate soybean yield predictions for Italian provinces, we had to get images from the same datasets for Italy. Thankfully, it was possible, as the aforementioned MODIS datasets provide a global coverage. We chose to fetch data for several years (2010 till 2015), to be able to observe the variability between the model's performance between years. Consequently, the pipeline of getting soybean yield predictions consisted of the following steps (in chronological order):
 </p>
 
-<p align="justify">
-<ul>
-<li>Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;</li>
-<li>Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</li>
-<li>Converting the retrieved yields from quintals per hectar per bushels to acre;</li>
-<li>Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changes had to be made to be able to use the model on different data;</li>
-<li>Selecting the model for evaluation. As the authors' codebase provide 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;</li>
-<li>Evaluating the model's performance with the data for Italy.</li>
-</ul>
+
+
+
+- <p align="justify">Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;
 </p>
+
+- <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
+
+- <p align="justify">Converting the retrieved yields from quintals per hectar per bushels to acre;</p>
+  
+- <p align="justify">Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changes had to be made to be able to use the model on different data;</p>
+  
+- <p align="justify">Selecting the model for evaluation. As the authors' codebase provide 2 models (CNN and LSTM), evaluating one of them would already be sufficient to determine whether the model can generalize to new geographies. Hence, the CNN model was chosen for evaluation;</p>
+  
+- <p align="justify">Evaluating the model's performance with the data for Italy.</p>
+
+
+
 
 ## Results
 
@@ -139,6 +147,8 @@ To further validate the architectural choices and evaluate their individual cont
 As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
 </p>
 
+<div align="center">
+    
 |       Component Ablated      | Average RMSE | Average RMSE (GP) |
 |------------------------------|--------------|-------------------|
 |       None (Base Model)      |     6.30     |    <b>5.77</b>    |
@@ -146,7 +156,9 @@ As shown in Table 2 below, the removal or replacement of any of these components
 |       Input Embedding        |     6.67     |       6.71        |
 |      Attention Pooling       |     6.48     |       6.04        |
 
-<p>Table 2: Ablation study results</p>
+</div>
+
+<p align="center">Table 2: Ablation study results</p>
 
 <p align="justify">
 The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
