@@ -372,14 +372,144 @@ After having trained the CNN model, it was directly employed to predict soybean 
 To see how errors change over time, Figure 3 presents a visualization, showing how far the predictions were from the real soybean yields.
 </p>
 
-| Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
-|------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
-| 2010 | 32.2186   | 25.64719 | 320.03386         | 4.60165   | 3.89281  | 15.72162          | 0.002       | 0.00277    | 0.58918             | 26.92416    | 22.1686    | 35.3953             |
-| 2011 | 42.21827  | 42.22494 | 320.03386         | 5.48281   | 5.09828  | 15.38811          | 0.00097     | 0.0092     | 2.17802             | 27.65279    | 25.32015   | 52.50981            |
-| 2012 | 9.04276   | 40.653   | 510.69951         | 2.28145   | 4.95761  | 18.62258          | 0.00003     | 0.00076    | 1.8417              | 22.43994    | 28.50721   | 66.13747            |
-| 2013 | 24.83046  | 41.13956 | 259.84788         | 3.83358   | 5.17664  | 12.12964          | 0.00357     | 0.02237    | 0.009               | 25.77919    | 23.06424   | 54.91508            |
-| 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
-| 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
+<table>
+  <tr>
+    <th>Year</th>
+    <th>Train MSE</th>
+    <th>Test MSE</th>
+    <th>IT Validation MSE</th>
+    <th>Train MAE</th>
+    <th>Test MAE</th>
+    <th>IT Validation MAE</th>
+    <th>Train MinAD</th>
+    <th>Test MinAD</th>
+    <th>IT Validation MinAD</th>
+    <th>Train MaxAD</th>
+    <th>Test MaxAD</th>
+    <th>IT Validation MaxAD</th>
+  </tr>
+  <tr>
+    <td>2010</td>
+    <td>32.22</td>
+    <td>25.65</td>
+    <td>320.03</td>
+    <td>4.6</td>
+    <td>3.89</td>
+    <td>15.72</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0.59</td>
+    <td>26.92</td>
+    <td>22.17</td>
+    <td>35.4</td>
+  </tr>
+  <tr>
+    <td>2011</td>
+    <td>42.22</td>
+    <td>42.22</td>
+    <td>320.03</td>
+    <td>5.48</td>
+    <td>5.1</td>
+    <td>15.39</td>
+    <td>0</td>
+    <td>0.01</td>
+    <td>2.18</td>
+    <td>27.65</td>
+    <td>25.32</td>
+    <td>52.51</td>
+  </tr>
+  <tr>
+    <td>2012</td>
+    <td>9.04</td>
+    <td>40.65</td>
+    <td>510.7</td>
+    <td>2.28</td>
+    <td>4.96</td>
+    <td>18.62</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1.84</td>
+    <td>22.44</td>
+    <td>28.51</td>
+    <td>66.14</td>
+  </tr>
+  <tr>
+    <td>2013</td>
+    <td>24.83</td>
+    <td>41.14</td>
+    <td>259.85</td>
+    <td>3.83</td>
+    <td>5.18</td>
+    <td>12.13</td>
+    <td>0</td>
+    <td>0.02</td>
+    <td>0.01</td>
+    <td>25.78</td>
+    <td>23.06</td>
+    <td>54.92</td>
+  </tr>
+  <tr>
+    <td>2014</td>
+    <td>8.9</td>
+    <td>20.08</td>
+    <td>292.73</td>
+    <td>2.28</td>
+    <td>3.43</td>
+    <td>14.07</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1.21</td>
+    <td>20.78</td>
+    <td>26.91</td>
+    <td>36.44</td>
+  </tr>
+  <tr>
+    <td>2015</td>
+    <td>7.99</td>
+    <td>40.9</td>
+    <td>485.5</td>
+    <td>2.15</td>
+    <td>5.18</td>
+    <td>18.21</td>
+    <td>0</td>
+    <td>0.03</td>
+    <td>0.03</td>
+    <td>30.62</td>
+    <td>22.77</td>
+    <td>49.52</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Avg.</th>
+    <td>20.87</td>
+    <td>35.11</td>
+    <td>364.81</td>
+    <td>3.44</td>
+    <td>4.62</td>
+    <td>15.69</td>
+    <td>0</td>
+    <td>0.01</td>
+    <td>0.98</td>
+    <td>25.7</td>
+    <td>24.79</td>
+    <td>49.16</td>
+  </tr>
+</table>
+
 
 <p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
 
