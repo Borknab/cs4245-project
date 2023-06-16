@@ -116,14 +116,9 @@ To verify whether the model trained on the satellite images for the US could mak
 
 ## Results
 
-### Transformer and GRU: Hyperparamater optimizations
+### Tranformer 
 <p align="justify">
-Once the models (Transformer and GRU) were implemented codewise, we tested them and we delved into hyperparameter optimization.
-</p>
-
-#### Tranformer 
-<p align="justify">
-For the Transformer, we started with a manual selection of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
+Once the Transformer model was implemented codewise, we tested it and worked on the hyperparamaters, we started by manually testing and selecting a range of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
 </p>
 
 <p align="justify">
@@ -141,10 +136,10 @@ The discovery that the optimal configuration leaned towards lower values for var
 </p>
 
 <p align="justify">
-An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the <b>!!!N-hour!!!</b> training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
+An interesting observation from our experiments was the efficient training time of the Transformer. Despite its great performance, it trained in under 30 minutes, a significant difference from the around 1-hour training period required by the CNN and LSTM models. This showcases the exceptional efficiency of the Transformer architecture and paves the way for potential future research: with an expanded dataset, it is very likely that the Transformer's performance could outdo the other models by a substantial margin, whilst still maintaining a feasible training duration. This exploration of hyperparameters and model efficiency shows the power and potential of the Transformer architecture in our domain of application.
 </p>
 
-##### Ablation study 
+#### Ablation study 
 <p align="justify">
 To further validate the architectural choices and evaluate their individual contributions to the final performance of our model, we performed an ablation study. In the study, we systematically remove or replace certain parts of the model and measure the impact on performance. We ablated on positional encoding, input embedding and attention pooling, as they are essential components of our encoder-only Transformer architecture.
 </p>
@@ -200,7 +195,7 @@ Replacing attention pooling with average pooling resulted in another performance
 In conclusion, each of these ablations resulted in a degraded performance, indicating that each component – positional encoding, input embedding, and attention pooling – contributes significantly to the success of our model. The decrease in performance when removing any of these elements demonstrates their importance in the architecture and validates our initial architectural choices.
 </p>
 
-#### GRU 
+### GRU 
 <p align="justify">
 Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Based on the original parameters, *Optuna* was used to perform Bayesian hyperparamter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
 </p>
@@ -358,9 +353,11 @@ To compare the performance of the models we have plotted the RMSE of the models 
 
 <p align="center">Table 4: RMSE for the different architectures, with and without Gaussian Processses</p>
 
+<p align="justify">
+The results of our experiments revealed the superiority of the Transformer model in terms of both performance and efficiency. The Transformer outperformed other architectures, achieving the lowest average RMSE of 5.77 when combined with Gaussian Processes. Despite its remarkable performance, the Transformer model required less than 30 minutes of training time, less than the time taken by the CNN and LSTM models. This high efficiency may be attributed to the Transformer's self-attention mechanism which enables the model to focus on the most relevant parts of the input sequence for its predictions. The GRU model exhibited decent performance but was outperformed by the Transformer. Overall the results suggest that the Transformer architecture's capability of handling sequence data and its efficient training time render it particularly suitable for this application domain, possibly more than the models utilized by the authors (LSTM and 3D CNN).
+</p>
 
-<i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
-COmment on how transformer achieve the best performance </i>
+
 
 ## Evaluating the CNN model on Italy: Quantitative results
 
