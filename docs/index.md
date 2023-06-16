@@ -1,3 +1,10 @@
+<style>
+  td, th {
+    text-align: center;
+  }
+</style>
+
+
 Francesco Piccoli (ID: 5848474)
 
 Marcus Plesner (ID: 4932021)
@@ -146,7 +153,7 @@ To further validate the architectural choices and evaluate their individual cont
 As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
 </p>
 
-<table align="center">
+<table align="center" style="display: revert-layer; width:50%">
   <tr>
     <th>Component Ablated</th>
     <th>Average RMSE</th>
