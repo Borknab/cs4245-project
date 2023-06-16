@@ -33,18 +33,18 @@ In our attempt to reproduce the results presented in the paper, the first step w
 </p>
 
 <p align="justify">
-Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not a possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage <a href="https://developers.google.com/earth-engine/guides/exporting">were supported for exports</a>. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
+Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage <a href="https://developers.google.com/earth-engine/guides/exporting">were supported for exports</a>. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
 </p>
 
 <p align="justify">
-To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders from the paper authors' GitHub repository to our shared Drive, which we then accessed from Colab. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The code we implemented on Colab was essentially analogous to the run.py file in the repository, with the addition of the training functions for the models we implemented ourselves - GRU and Tranformer, as well as utility funcions to facilitate exports and processing for Italian satellite images. Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
+To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders from the paper authors' GitHub repository to our shared Drive, which we then accessed from Colab. CondaColab, a tool that allows easy installation of Conda on Colab notebooks, was utilized for managing and installing the necessary dependencies. We then authenticated and created a project on the Google Earth Engine platform. The code we implemented on Colab was essentially analogous to the run.py file in the repository, with the addition of the training functions for the models we implemented ourselves - GRU and Tranformer, as well as utility functions to facilitate exports and processing for Italian satellite images. Following these steps, we were successful in setting up the training environment and reproducing the results as reported in the paper.
 </p>
 
 ### GRU Architecture
 
 <p align="justify">
 The group chose to implement a GRU based model to predict crop yield due to the limited amount of crop yield data. GRU models have been shown to outperform LSTMs in situations where there is not enough data for an LSTM to learn the underlying structure[3]. The minimum amount of data available was in 2009, where the training set size was 4881. 
-<p>
+</p>
 
 <p align="justify">
 The implementation of the GRU model is similar to the existing implementation of the LSTM model, without a cell state. The three parts of the GRU model are the GRU cells themselves, the dropout, which is applied at every sequence step, and the dense network which outputs the final predictions.
@@ -64,6 +64,7 @@ The reason for testing a GRU based network is because it has the potential to ou
 </p>
 
 ### Tranformer Architecture
+
 <p align="justify">
 For the implementation of the Transformer model, we chose an encoder-only architecture, given that our task is a many-to-one, namely a sequence-to-number (i.e. the regression task of predicting the annual crop yield from the sequences of histograms representing the satellite images over the months), rather than sequence-to-sequence.
 </p>
@@ -121,7 +122,7 @@ To verify whether the model trained on the satellite images for the US could mak
 
 ### Tranformer 
 <p align="justify">
-Once the Transformer model was implemented codewise, we tested it and worked on the hyperparamaters, we started by manually testing and selecting a range of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
+Once the Transformer model was implemented codewise, we tested it and worked on the hyperparamaters. We started by manually testing and selecting a range of values for embedding size, batch size, number of attention heads, hidden dimensions of the feedforward layer, dropout, and number of encoder layers, to find a subset of value ranges that showed promising results.
 </p>
 
 <p align="justify">
@@ -200,7 +201,7 @@ In conclusion, each of these ablations resulted in a degraded performance, indic
 
 ### GRU 
 <p align="justify">
-Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Based on the original parameters, *Optuna* was used to perform Bayesian hyperparamter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
+Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Then, *Optuna* was used to perform Bayesian hyperparameter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
 </p>
 
 <table align="center" style="display: revert-layer; width: 70%;">
@@ -233,12 +234,12 @@ Initially, the GRU model was tested with the same hyperparameter which were used
 <p align="center">Table 3: Hyperparameters from the original LSTM model and the tuned GRU model</p>
 
 <p align="justify">
-The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased. Furthermore, the decrease in dropout suggests that too much information was lost when using high dropout. This also suggests that information which was contained in the cell state was indeed lost, and the dropout needed to be reduced as a consequence.
+The main difference between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased. Furthermore, the decrease in dropout suggests that too much information was lost when using high dropout. This also suggests that information which was contained in the cell state was indeed lost, and the dropout needed to be reduced as a consequence.
 </p>
 
 ### Transformer and GRU: Quantitative results
 <p align="justify">
-To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
+To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years.
 </p>
 
 <table align="center" style="display: revert-layer; width: 93%;">
@@ -357,7 +358,7 @@ To compare the performance of the models we have plotted the RMSE of the models 
 <p align="center">Table 4: RMSE for the different architectures, with and without Gaussian Processses</p>
 
 <p align="justify">
-The results of our experiments revealed the superiority of the Transformer model in terms of both performance and efficiency. The Transformer outperformed other architectures, achieving the lowest average RMSE of 5.77 when combined with Gaussian Processes. Despite its remarkable performance, the Transformer model required less than 30 minutes of training time, less than the time taken by the CNN and LSTM models. This high efficiency may be attributed to the Transformer's self-attention mechanism which enables the model to focus on the most relevant parts of the input sequence for its predictions. The GRU model exhibited decent performance but was outperformed by the Transformer. Overall the results suggest that the Transformer architecture's capability of handling sequence data and its efficient training time render it particularly suitable for this application domain, possibly more than the models utilized by the authors (LSTM and 3D CNN).
+The results of our experiments revealed the superiority of the Transformer model in terms of both performance and efficiency. The Transformer outperformed other architectures, achieving the lowest average RMSE of 5.77 when combined with Gaussian Processes. Despite its remarkable performance, the Transformer model required less than 30 minutes of training time, less than the time taken by the CNN and LSTM models. This high efficiency may be attributed to the Transformer's self-attention mechanism which enables the model to focus on the most relevant parts of the input sequence for its predictions. The GRU model exhibited decent performance but was outperformed by the Transformer. Overall the results suggest that the Transformer architecture's capability of handling sequence data and its efficient training time render it particularly suitable for this application domain, possibly more than the models utilized by the authors (LSTM and 3D CNN). Finally the results validate what claimed by the authors in the paper: gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
 
