@@ -102,7 +102,7 @@ To verify whether the model trained on the satellite images for the US could mak
 
 - <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
 
-- <p align="justify">Converting the retrieved yields from quintals per hectar per bushels to acre;</p>
+- <p align="justify">Converting the retrieved yields from quintals per hectare per bushels to acre;</p>
   
 - <p align="justify">Adapting the codebase to make it work with the data for Italy. As the codebase was tightly coupled to work with the US satellite data, many changes had to be made to be able to use the model on different data;</p>
   
