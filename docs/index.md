@@ -92,8 +92,7 @@ To verify whether the model trained on the satellite images for the US could mak
 
 
 
-- <p align="justify">Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;
-</p>
+- <p align="justify">Getting the satellite images for each Italian province, for the period of 2010-2015. That involved filtering out MODIS data based on the geometry per each province retrieved from the <a href="https://developers.google.com/earth-engine/datasets/catalog/FAO_GAUL_2015_level2">FAO GAUL dataset</a>;</p>
 
 - <p align="justify">Getting actual crop yields per province, for the period of 2010-2015. The model essentially solves a regression task - it outputs a crop yield (bushels per acre) per specific time period, given the preprocessed satellite image data. Hence, it was crucial to get the actual soybean crop yields to later on assess the model's performance. Consequently, the data were retrieved from The Italian National Institute of Statistics [2];</p>
 
@@ -147,18 +146,36 @@ To further validate the architectural choices and evaluate their individual cont
 As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
 </p>
 
-<div align="center">
-    
-|       Component Ablated      | Average RMSE | Average RMSE (GP) |
-|------------------------------|--------------|-------------------|
-|       None (Base Model)      |     6.30     |    <b>5.77</b>    |
-|      Positional Encoding     |     6.58     |       6.35        |
-|       Input Embedding        |     6.67     |       6.71        |
-|      Attention Pooling       |     6.48     |       6.04        |
-
-</div>
+<table align="center">
+  <tr>
+    <th>Component Ablated</th>
+    <th>Average RMSE</th>
+    <th>Average RMSE (GP)</th>
+  </tr>
+  <tr>
+    <td>None (Base Model)</td>
+    <td>6.30</td>
+    <td><b>5.77</b></td>
+  </tr>
+  <tr>
+    <td>Positional Encoding</td>
+    <td>6.58</td>
+    <td>6.35</td>
+  </tr>
+  <tr>
+    <td>Input Embedding</td>
+    <td>6.67</td>
+    <td>6.71</td>
+  </tr>
+  <tr>
+    <td>Attention Pooling</td>
+    <td>6.48</td>
+    <td>6.04</td>
+  </tr>
+</table>
 
 <p align="center">Table 2: Ablation study results</p>
+
 
 <p align="justify">
 The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
