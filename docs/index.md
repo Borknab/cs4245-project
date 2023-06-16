@@ -232,6 +232,8 @@ Initially, the GRU model was tested with the same hyperparameter which were used
   </tr>
 </table>
 
+<p align="center">Table 3: Hyperparameters from the original LSTM model and the tuned GRU model</p>
+
 <p align="justify">
 The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased.
 </p>
@@ -354,7 +356,7 @@ To compare the performance of the models we have plotted the RMSE of the models 
   </tr>
 </table>
 
-<p align="center">Table 3: RMSE for the different architectures, with and without Gaussian Processses</p>
+<p align="center">Table 4: RMSE for the different architectures, with and without Gaussian Processses</p>
 
 
 <i> Mention that for the LSTM and 3d CNN we used the same hyperpams as suggested in the paper which are...
@@ -379,7 +381,7 @@ To see how errors change over time, Figure 3 presents a visualization, showing h
 | 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
 | 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
 
-<p align="center">Table 4: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
+<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
 
 <p align="justify">
 <p align="center">
