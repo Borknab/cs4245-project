@@ -44,6 +44,10 @@ To adapt the codebase to run on Colab, we imported the 'cyp' and 'data' folders 
 ### GRU Architecture
 
 <p align="justify">
+The group chose to implement a GRU based model to predict crop yield due to the limited amount of crop yield data. GRU models have been shown to outperform LSTMs in situations where there is not enough data for an LSTM to learn the underlying structure[3]. The minimum amount of data available was in 2009, where the training set size was 4881. 
+<p>
+
+<p align="justify">
 The implementation of the GRU model is similar to the existing implementation of the LSTM model, without a cell state. The three parts of the GRU model are the GRU cells themselves, the dropout, which is applied at every sequence step, and the dense network which outputs the final predictions.
 </p>
 
@@ -211,7 +215,7 @@ Initially, the GRU model was tested with the same hyperparameter which were used
 |  Tuned  | 1248 |  0.10  |  128  |  0.0005  |  0.10  |
 
 <p align="justify">
-The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased.
+The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased. Furthermore, the decrease in dropout suggests that too much information was lost when using high dropout. This also suggests that information which was contained in the cell state was indeed lost, and the dropout needed to be reduced as a consequence.
 </p>
 
 ### Transformer and GRU: Quantitative results
@@ -279,5 +283,8 @@ Overall, our reproduction and analysis of the paper's methodology and results va
 ## References
 <p align="justify">
 [1] You, J., Li, X., Low, M., Lobell, D., & Ermon, S. (2017, February). Deep gaussian process for crop yield prediction based on remote sensing data. In Proceedings of the AAAI conference on artificial intelligence (Vol. 31, No. 1).
+
 [2] OECD. (n.d.). Crops : Areas and production - overall data - provinces. © OECD. http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#
+
+[3] Chung, Junyoung & Gulcehre, Caglar & Cho, KyungHyun & Bengio, Y.. (2014). Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling. 
 </p>
