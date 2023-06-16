@@ -381,7 +381,7 @@ To see how errors change over time, Figure 3 presents a visualization, showing h
 <p align="center">
     <div style="display: flex; align-items: center; justify-content: center;">
       <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
-      <img style="margin-left: 25px;" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/colorbar.png"/><br>
+      <img width="60" style="margin-left: 30px; margin-bottom: 75px;" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/colorbar.png"/><br>
     </div>
     <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015</p>
 </p>
