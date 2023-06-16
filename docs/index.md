@@ -205,7 +205,7 @@ In conclusion, each of these ablations resulted in a degraded performance, indic
 Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Based on the original parameters, *Optuna* was used to perform Bayesian hyperparamter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
 </p>
 
-<table align="center" style="display: revert-layer;">
+<table align="center" style="display: revert-layer; width: 70%;">
   <tr>
     <th>Configuration</th>
     <th>Hidden Size</th>
@@ -241,7 +241,7 @@ The main differnce between the two configuration is the size of the hidden layer
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-<table align="center" style="display: revert-layer; width: 90%;">
+<table align="center" style="display: revert-layer; width: 93%;">
   <tr>
     <th>Year</th>
     <th>LSTM</th>
