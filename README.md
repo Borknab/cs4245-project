@@ -14,7 +14,8 @@ To evaluate the model on Italian provinces, we had to make multiple other change
 - `convert_csv.py` is the script for converting the data from The Italian National Institute of Statistics to the format expected by the paper authors' codebase;
 - `it_data.csv` contains the [data](http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#j) exported from **The Italian National Institute of Statistics**. Namely, the file contains soybean yields per province, for the years 2010-2015;
 - `it_yield_data.csv` contains the output from running `convert_csv.py`;
-- `provinces_plot.py` is the script for generating Italy error map that can be seen in our [blog post](https://borknab.github.io/cs4245-project/).
+- `provinces_plot.py` is the script for generating Italy error map that can be seen in our [blog post](https://borknab.github.io/cs4245-project/);
+- `italy_provinces.svg` is the file used for generating the prediction error map.
 
 For more information on the implementation and the results, check the full blog post at: https://borknab.github.io/cs4245-project/
 
