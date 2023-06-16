@@ -241,7 +241,7 @@ The main differnce between the two configuration is the size of the hidden layer
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-<table align="center" style="display: revert-layer;">
+<table align="center" style="width: 100%;">
   <tr>
     <th>Year</th>
     <th>LSTM</th>
@@ -362,9 +362,13 @@ COmment on how transformer achieve the best performance </i>
 
 ## Evaluating the CNN model on Italy: Quantitative results
 
+<p align="justify">
 After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data (IT Validation metrics), it became evident that the model performed significantly worse compared to the default US train and test sets, as shown in Table 4. The Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a staggering difference of 66.13747 bushels per acre in 2012.
+</p>
 
+<p align="justify">
 To see how errors change over time, Figure 3 presents a visualization, showing how far the predictions were from the real soybean yields.
+</p>
 
 | Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
 |------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
