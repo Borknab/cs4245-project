@@ -34,7 +34,7 @@ In our attempt to reproduce the results presented in the paper, the first step w
 </p>
 
 <p align="justify">
-Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not a possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage were supported for exports https://developers.google.com/earth-engine/guides/exporting. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
+Considering the sheer volume of data, storing it locally was not a feasible option. Additionally, as the authors' codebase makes use of Earth Engine API, storing locally was not a possible, since only Google Cloud Storage, Google Drive, or Earth Engine Storage <a href="https://developers.google.com/earth-engine/guides/exporting">were supported for exports</a>. Thus, we leveraged Google Colab and Google Drive's premium plan for storing and accessing these files. Utilizing Google Drive made it easy and convenient to collaborate as we could share folders, avoid local storage, and exploit the free GPU resources provided by Colab for training the models.
 </p>
 
 <p align="justify">
@@ -359,14 +359,14 @@ The results of our experiments revealed the superiority of the Transformer model
 
 
 
-## Evaluating the CNN model on Italy: Quantitative results
+### Evaluating the CNN model on Italy: Quantitative results
 
 <p align="justify">
-After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data, it became evident that the model performed significantly worse compared to the default US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
+After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's accuracy, it became evident that the model made significantly worse predictions for Italy compared to the unchanged US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
 </p>
 
 <p align="justify">
-Figure 3 presents a visualization illustrating the changes in errors over time by depicting the disparities between predicted and actual soybean yields. Adjacent to the figure, a colorbar indicates the assigned colors for errors below or above 5, 10, or 15 bushels per acre. The analysis reveals that numerous provinces exhibit under-predicted crop yields. Conversely, certain provinces, like Pavia, consistently achieve more accurate predictions, potentially due to the similarity between their satellite images and the training data used for the US. Overall, the model's predictions are too far off most of the time, rendering the model unreliable for accurate yield predictions in Italy. These findings suggest that the model may face challenges in generalizing to other countries as well.
+Figure 3 presents a visualization illustrating the changes in errors over time by depicting the disparities between predicted and actual soybean yields. Adjacent to the figure, a colorbar indicates the assigned colors for errors below or above 5, 10, or 15 bushels per acre. The analysis reveals that numerous provinces exhibit underpredicted crop yields. Conversely, certain provinces, like Pavia, consistently achieve more accurate predictions, potentially due to the similarity between their satellite images and the training data used for the US. Overall, the model's predictions are too far off most of the time, rendering the model unreliable for accurate yield predictions in Italy. These findings suggest that the model may face challenges in generalizing to other countries as well.
 </p>
 
 <table align="center" style="display: revert-layer; width: 93%;">
@@ -472,7 +472,7 @@ Figure 3 presents a visualization illustrating the changes in errors over time b
 </table>
 
 
-<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD) for Italy (IT) and the default US test set</p>
+<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented for Italy (IT) and the default US test set: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
 
 <p align="justify">
 <p align="center">
@@ -480,7 +480,7 @@ Figure 3 presents a visualization illustrating the changes in errors over time b
       <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
       <img width="60" style="margin-left: 30px; margin-bottom: 75px;" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/colorbar.png"/><br>
     </div>
-    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015</p>
+    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015. Red colors indicate underprediction of soybean yields, while blue colors indicate overprediction.</p>
 </p>
 </p>
 
@@ -494,11 +494,11 @@ We successfully implemented two new models, a GRU based model and transformer ba
 </p>
 
 <p align="justify">
-We then evaluated the model's performance on predicting soybean yields in Italy using satellite images for the years 2010-2015 and actual crop yield data obtained from The Italian National Institute of Statistics. The model, trained on US satellite images, showed potential for generalization to different geographies, providing accurate predictions for Italian provinces. This suggests that the model can be trained on countries with abundant labeled data and used to predict crop yields in regions where such data is scarce.
+We then evaluated the model's performance on predicting soybean yields in Italy using satellite images for the years 2010-2015 and actual crop yield data obtained from The Italian National Institute of Statistics. The model, trained on US satellite images, did not provide accurate predictions for Italian provinces. This finding suggests the presence of underlying geographical differences between the US and Italy, which impede the effectiveness of the model trained on US data in making reliable predictions for Italy. As a result, the model may encounter difficulties in generalizing to other countries as well, thereby limiting its usefulness in regions with limited agricultural data. The model would likely have to be retrained whenever predictions for a new country are needed. However, further evaluations are necessary to draw more definitive conclusions.
 </p>
 
 <p align="justify">
-Overall, our reproduction and analysis of the paper's methodology and results validate the authors' claims and demonstrate the effectiveness of deep learning and remote sensing data in predicting crop yields. The alternative models we implemented offer potential improvements and insights for future research in this field. The successful evaluation on Italian data further emphasizes the model's potential for broader applications and its contribution to addressing global food security challenges.
+Overall, our reproduction and analysis of the paper's methodology and results validate the authors' claims and demonstrate the effectiveness of deep learning and remote sensing data in predicting crop yields. The alternative models we implemented offer potential improvements and insights for future research in this field. Lastly, based on the evaluation of Italian data, it is evident that the CNN model needs to be retrained using country-specific data to ensure accurate predictions for each respective country. However, despite this limitation, the model holds promising potential for broader applications and offers a significant contribution to addressing global food security challenges.
 </p>
 
 ## References
