@@ -362,116 +362,88 @@ The results of our experiments revealed the superiority of the Transformer model
 ## Evaluating the CNN model on Italy: Quantitative results
 
 <p align="justify">
-After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data (IT Validation metrics), it became evident that the model performed significantly worse compared to the default US train and test sets, as shown in Table 4. The Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a staggering difference of 66.13747 bushels per acre in 2012.
+After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data (IT Validation metrics), it became evident that the model performed significantly worse compared to the default US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
 </p>
 
 <p align="justify">
-To see how errors change over time, Figure 3 presents a visualization, showing how far the predictions were from the real soybean yields.
+Figure 3 presents a visualization illustrating the changes in errors over time by depicting the disparities between predicted and actual soybean yields. Adjacent to the figure, a colorbar indicates the assigned colors for errors below or above 5, 10, or 15 bushels per acre. The analysis reveals that numerous provinces exhibit under-predicted crop yields. Conversely, certain provinces, like Pavia, consistently achieve more accurate predictions, potentially due to the similarity between their satellite images and the training data used for the US. Overall, the model's predictions are too far off most of the time, rendering the model unreliable for accurate yield predictions in Italy. These findings suggest that the model may face challenges in generalizing to other countries as well.
 </p>
 
-<table>
+<table align="center" style="display: revert-layer; width: 93%;">
   <tr>
     <th>Year</th>
-    <th>Train MSE</th>
-    <th>Test MSE</th>
-    <th>IT Validation MSE</th>
-    <th>Train MAE</th>
-    <th>Test MAE</th>
+    <th>US Test RMSE</th>
+    <th>IT Validation RMSE</th>
+    <th>US Test MAE</th>
     <th>IT Validation MAE</th>
-    <th>Train MinAD</th>
-    <th>Test MinAD</th>
+    <th>US Test MinAD</th>
     <th>IT Validation MinAD</th>
-    <th>Train MaxAD</th>
-    <th>Test MaxAD</th>
+    <th>US Test MaxAD</th>
     <th>IT Validation MaxAD</th>
   </tr>
   <tr>
     <td>2010</td>
-    <td>32.22</td>
-    <td>25.65</td>
-    <td>320.03</td>
-    <td>4.6</td>
+    <td>6.75</td>
+    <td>17.89</td>
     <td>3.89</td>
     <td>15.72</td>
     <td>0</td>
-    <td>0</td>
     <td>0.59</td>
-    <td>26.92</td>
     <td>22.17</td>
     <td>35.4</td>
   </tr>
   <tr>
     <td>2011</td>
-    <td>42.22</td>
-    <td>42.22</td>
-    <td>320.03</td>
-    <td>5.48</td>
+    <td>6.77</td>
+    <td>17.89</td>
     <td>5.1</td>
     <td>15.39</td>
-    <td>0</td>
     <td>0.01</td>
     <td>2.18</td>
-    <td>27.65</td>
     <td>25.32</td>
     <td>52.51</td>
   </tr>
   <tr>
     <td>2012</td>
-    <td>9.04</td>
-    <td>40.65</td>
-    <td>510.7</td>
-    <td>2.28</td>
+    <td>5.91</td>
+    <td>22.6</td>
     <td>4.96</td>
     <td>18.62</td>
     <td>0</td>
-    <td>0</td>
     <td>1.84</td>
-    <td>22.44</td>
     <td>28.51</td>
     <td>66.14</td>
   </tr>
   <tr>
     <td>2013</td>
-    <td>24.83</td>
-    <td>41.14</td>
-    <td>259.85</td>
-    <td>3.83</td>
+    <td>6.41</td>
+    <td>16.12</td>
     <td>5.18</td>
     <td>12.13</td>
-    <td>0</td>
     <td>0.02</td>
     <td>0.01</td>
-    <td>25.78</td>
     <td>23.06</td>
     <td>54.92</td>
   </tr>
   <tr>
     <td>2014</td>
-    <td>8.9</td>
-    <td>20.08</td>
-    <td>292.73</td>
-    <td>2.28</td>
+    <td>5.28</td>
+    <td>17.11</td>
     <td>3.43</td>
     <td>14.07</td>
     <td>0</td>
-    <td>0</td>
     <td>1.21</td>
-    <td>20.78</td>
     <td>26.91</td>
     <td>36.44</td>
   </tr>
   <tr>
     <td>2015</td>
-    <td>7.99</td>
-    <td>40.9</td>
-    <td>485.5</td>
-    <td>2.15</td>
+    <td>6.18</td>
+    <td>22.03</td>
     <td>5.18</td>
     <td>18.21</td>
-    <td>0</td>
     <td>0.03</td>
     <td>0.03</td>
-    <td>30.62</td>
     <td>22.77</td>
     <td>49.52</td>
   </tr>
@@ -485,30 +457,22 @@ To see how errors change over time, Figure 3 presents a visualization, showing h
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
   </tr>
   <tr>
     <th>Avg.</th>
-    <td>20.87</td>
-    <td>35.11</td>
-    <td>364.81</td>
-    <td>3.44</td>
+    <td>6.19</td>
+    <td>18.94</td>
     <td>4.62</td>
     <td>15.69</td>
-    <td>0</td>
     <td>0.01</td>
     <td>0.98</td>
-    <td>25.7</td>
     <td>24.79</td>
     <td>49.16</td>
   </tr>
 </table>
 
 
-<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
+<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
 
 <p align="justify">
 <p align="center">
@@ -540,5 +504,6 @@ Overall, our reproduction and analysis of the paper's methodology and results va
 ## References
 <p align="justify">
 [1] You, J., Li, X., Low, M., Lobell, D., & Ermon, S. (2017, February). Deep gaussian process for crop yield prediction based on remote sensing data. In Proceedings of the AAAI conference on artificial intelligence (Vol. 31, No. 1).
+
 [2] OECD. (n.d.). Crops : Areas and production - overall data - provinces. © OECD. http://dati.istat.it/Index.aspx?QueryId=37850&lang=en#
 </p>
