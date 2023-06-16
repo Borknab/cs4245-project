@@ -241,7 +241,7 @@ The main differnce between the two configuration is the size of the hidden layer
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-<table style="margin-left: auto; margin-right: auto;">
+<table align="center" style="display: revert-layer;">
   <tr>
     <th>Year</th>
     <th>LSTM</th>
