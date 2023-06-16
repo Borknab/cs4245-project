@@ -150,7 +150,6 @@ As shown in Table 2 below, the removal or replacement of any of these components
 
 <img align="center" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/table2.png" />
 
-
 <p align="justify">
 The ablation of positional encoding led to a noticeable performance degradation. Positional encoding in the Transformer model is crucial for understanding the temporal ordering in the sequence of satellite images, given that the Transformer architecture does not have inherent sequence awareness. Without positional encoding, the model struggled to effectively extract sequential patterns from the input data, resulting in a less accurate prediction.
 </p>
@@ -194,7 +193,7 @@ The results of our experiments revealed the superiority of the Transformer model
 ### Evaluating the CNN model on Italy: Quantitative results
 
 <p align="justify">
-After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's accuracy, it became evident that the model made significantly worse predictions for Italy compared to the unchanged US test set, as shown in Table 4. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
+After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's accuracy, it became evident that the model made significantly worse predictions for Italy compared to the unchanged US test set, as shown in Table 5. The Root Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a sizable difference of 66.13747 bushels per acre in 2012.
 </p>
 
 <p align="justify">
