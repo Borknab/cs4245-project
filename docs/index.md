@@ -223,14 +223,9 @@ COmment on how transformer achieve the best performance </i>
 
 ## Evaluating the CNN model on Italy: Quantitative results
 
-TODOTODOTODO
+After having trained the CNN model, it was directly employed to predict soybean yields in Italy. Overall, when evaluating the model's performance on the Italian satellite data (IT Validation metrics), it became evident that the model performed significantly worse compared to the default US train and test sets, as shown in Table 4. The Mean Squared Error and the Mean Absolute Error, which are calculated using the actual and predicted yields (both measured in bushels per acre), were notably higher for the Italian data across the years. Nevertheless, there were some Italian provinces where the model still achieved satisfactory predictions, as indicated by the minimum absolute difference per year. On the other hand, the model also exhibited large errors for certain provinces, as demonstrated by the maximum absolute difference per year, reaching a staggering difference of 66.13747 bushels per acre in 2012.
 
-<p align="justify">
-<p align="center">
-    <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
-    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015</p>
-</p>
-</p>
+To see how errors change over time, Figure 3 presents a visualization, showing how far the predictions were from the real soybean yields.
 
 | Year | Train MSE | Test MSE | IT Validation MSE | Train MAE | Test MAE | IT Validation MAE | Train MinAD | Test MinAD | IT Validation MinAD | Train MaxAD | Test MaxAD | IT Validation MaxAD |
 |------|-----------|----------|-------------------|-----------|----------|-------------------|-------------|------------|---------------------|-------------|------------|---------------------|
@@ -241,7 +236,17 @@ TODOTODOTODO
 | 2014 | 8.90212   | 20.07859 | 292.72935         | 2.27612   | 3.42747  | 14.06934          | 0.00039     | 0.00261    | 1.21306             | 20.78139    | 26.9059    | 36.44415            |
 | 2015 | 7.99226   | 40.90363 | 485.49815         | 2.1471    | 5.18377  | 18.21033          | 0.00011     | 0.03392    | 0.02983             | 30.62178    | 22.76862   | 49.52173            |
 
-<p align="center">Table 4: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p> 
+<p align="center">Table 4: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented: Mean Squared Error (MSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
+
+<p align="justify">
+<p align="center">
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <img width="400" height="600" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/animated_changes_in_predictions_italy.gif"/><br>
+      <img style="margin-left: 25px;" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/colorbar.png"/><br>
+    </div>
+    <p align="center">Figure 3: Changes in errors between the prediced crop yields and the real crop yields for Italian provinces from 2010 to 2015</p>
+</p>
+</p>
 
 ## Discussion and Conclusion
 <p align="justify">
