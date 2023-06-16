@@ -129,11 +129,7 @@ Once the Transformer model was implemented codewise, we tested it and worked on 
 Taking the obtained initial results into consideration, we then employed the <i>Optuna</i> Python package to perform Bayesian hyperparameter optimization. The process returned an optimal configuration that revolved around lower values across the parameters - an embedding size between 48 to 128, attention heads in the range of 2 to 4, 1 to 3 encoder layers, and a low dropout rate from 0.1 to 0.2. A batch size of 64 demonstrated the best results. The best performing model was run with the following hyperparameters: 
 </p>
     
-| Num of Encoders | Embedding Size | Num of Attention Heads | Dropout Rate | FFNN (encoder) Hidden Size |   FFNN (last) Hidden Size  | Patience | Batch Size |
-|-----------------|----------------|------------------------|--------------|----------------------------|----------------------------|----------|------------|
-|        1        |       48       |           3            |     0.1      |            512             |            128             |    10    |     64     |
-
-<p align="center">Table 1: Best hyperparamaters for the encoder-only transformer</p>   
+<img align="center" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/table1.png" />
 
 <p align="justify">
 The discovery that the optimal configuration leaned towards lower values for various parameters seem to indicate a relatively low complexity of the data domain. The model achieved optimal results without requiring a complex or deep architecture, which signifies that it was successful in feature extraction without resorting to overfitting (given also the low dropout rate).
@@ -152,35 +148,7 @@ To further validate the architectural choices and evaluate their individual cont
 As shown in Table 2 below, the removal or replacement of any of these components led to a noticeable increase in RMSE values, which indicates a decrease in model performance. 
 </p>
 
-<table align="center" style="display: revert-layer; width:50%">
-  <tr>
-    <th>Component Ablated</th>
-    <th>Average RMSE</th>
-    <th>Average RMSE (GP)</th>
-  </tr>
-  <tr>
-    <td>None (Base Model)</td>
-    <td>6.30</td>
-    <td><b>5.77</b></td>
-  </tr>
-  <tr>
-    <td>Positional Encoding</td>
-    <td>6.58</td>
-    <td>6.35</td>
-  </tr>
-  <tr>
-    <td>Input Embedding</td>
-    <td>6.67</td>
-    <td>6.71</td>
-  </tr>
-  <tr>
-    <td>Attention Pooling</td>
-    <td>6.48</td>
-    <td>6.04</td>
-  </tr>
-</table>
-
-<p align="center">Table 2: Ablation study results</p>
+<img align="center" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/table2.png" />
 
 
 <p align="justify">
@@ -204,34 +172,7 @@ In conclusion, each of these ablations resulted in a degraded performance, indic
 Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Then, *Optuna* was used to perform Bayesian hyperparameter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
 </p>
 
-<table align="center" style="display: revert-layer; width: 70%;">
-  <tr>
-    <th>Configuration</th>
-    <th>Hidden Size</th>
-    <th>Dropout</th>
-    <th>Batch Size</th>
-    <th>Learning Rate</th>
-    <th>Weight Decay</th>
-  </tr>
-  <tr>
-    <td>Original</td>
-    <td>128</td>
-    <td>0.75</td>
-    <td>32</td>
-    <td>0.001</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td>Tuned</td>
-    <td>1248</td>
-    <td>0.10</td>
-    <td>128</td>
-    <td>0.0005</td>
-    <td>0.10</td>
-  </tr>
-</table>
-
-<p align="center">Table 3: Hyperparameters from the original LSTM model and the tuned GRU model</p>
+<img align="center" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/table3.png" />
 
 <p align="justify">
 The main difference between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased. Furthermore, the decrease in dropout suggests that too much information was lost when using high dropout. This also suggests that information which was contained in the cell state was indeed lost, and the dropout needed to be reduced as a consequence.
@@ -242,120 +183,7 @@ The main difference between the two configuration is the size of the hidden laye
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years.
 </p>
 
-<table align="center" style="display: revert-layer; width: 93%;">
-  <tr>
-    <th>Year</th>
-    <th>LSTM</th>
-    <th>LSTM + GP</th>
-    <th>3d CNN</th>
-    <th>3d CNN + GP</th>
-    <th>GRU</th>
-    <th>GRU + GP</th>
-    <th>Transformer</th>
-    <th>Transformer + GP</th>
-  </tr>
-  <tr>
-    <td>2009</td>
-    <td>5.18</td>
-    <td>6.37</td>
-    <td>6.07</td>
-    <td>5.56</td>
-    <td>5.75</td>
-    <td>6.67</td>
-    <td>4.93</td>
-    <td>4.78</td>
-  </tr>
-  <tr>
-    <td>2010</td>
-    <td>7.27</td>
-    <td>7.30</td>
-    <td>6.75</td>
-    <td>7.03</td>
-    <td>7.45</td>
-    <td>6.10</td>
-    <td>6.71</td>
-    <td>6.45</td>
-  </tr>
-  <tr>
-    <td>2011</td>
-    <td>6.82</td>
-    <td>6.72</td>
-    <td>6.77</td>
-    <td>6.40</td>
-    <td>6.26</td>
-    <td>5.83</td>
-    <td>5.66</td>
-    <td>5.56</td>
-  </tr>
-  <tr>
-    <td>2012</td>
-    <td>7.01</td>
-    <td>6.46</td>
-    <td>5.91</td>
-    <td>5.72</td>
-    <td>5.72</td>
-    <td>5.46</td>
-    <td>6.68</td>
-    <td>6.14</td>
-  </tr>
-  <tr>
-    <td>2013</td>
-    <td>5.91</td>
-    <td>5.83</td>
-    <td>6.41</td>
-    <td>6.00</td>
-    <td>6.51</td>
-    <td>5.98</td>
-    <td>6.65</td>
-    <td>5.89</td>
-  </tr>
-  <tr>
-    <td>2014</td>
-    <td>5.99</td>
-    <td>4.65</td>
-    <td>5.28</td>
-    <td>4.87</td>
-    <td>5.86</td>
-    <td>5.84</td>
-    <td>6.77</td>
-    <td>5.78</td>
-  </tr>
-  <tr>
-    <td>2015</td>
-    <td>6.14</td>
-    <td>5.13</td>
-    <td>6.18</td>
-    <td>5.36</td>
-    <td>6.59</td>
-    <td>5.72</td>
-    <td>6.76</td>
-    <td>5.83</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Avg</th>
-    <td>6.33</td>
-    <td>6.06</td>
-    <td>6.19</td>
-    <td>5.84</td>
-    <td>6.30</td>
-    <td>5.94</td>
-    <td>6.30</td>
-    <th><strong>5.77</strong></th>
-  </tr>
-</table>
-
-<p align="center">Table 4: RMSE for the different architectures, with and without Gaussian Processses</p>
+<img align="center" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/table4.png" />
 
 <p align="justify">
 The results of our experiments revealed the superiority of the Transformer model in terms of both performance and efficiency. The Transformer outperformed other architectures, achieving the lowest average RMSE of 5.77 when combined with Gaussian Processes. Despite its remarkable performance, the Transformer model required less than 30 minutes of training time, less than the time taken by the CNN and LSTM models. This high efficiency may be attributed to the Transformer's self-attention mechanism which enables the model to focus on the most relevant parts of the input sequence for its predictions. The GRU model exhibited decent performance but was outperformed by the Transformer. Overall the results suggest that the Transformer architecture's capability of handling sequence data and its efficient training time render it particularly suitable for this application domain, possibly more than the models utilized by the authors (LSTM and 3D CNN). Finally the results validate what claimed by the authors in the paper: gaussian Processes improve the performance of the models, and decreases the variance of the results.
@@ -373,110 +201,7 @@ After having trained the CNN model, it was directly employed to predict soybean 
 Figure 3 presents a visualization illustrating the changes in errors over time by depicting the disparities between predicted and actual soybean yields. Adjacent to the figure, a colorbar indicates the assigned colors for errors below or above 5, 10, or 15 bushels per acre. The analysis reveals that numerous provinces exhibit underpredicted crop yields. Conversely, certain provinces, like Pavia, consistently achieve more accurate predictions, potentially due to the similarity between their satellite images and the training data used for the US. Overall, the model's predictions are too far off most of the time, rendering the model unreliable for accurate yield predictions in Italy. These findings suggest that the model may face challenges in generalizing to other countries as well.
 </p>
 
-<table align="center" style="display: revert-layer; width: 93%;">
-  <tr>
-    <th>Year</th>
-    <th>US Test RMSE</th>
-    <th>IT Validation RMSE</th>
-    <th>US Test MAE</th>
-    <th>IT Validation MAE</th>
-    <th>US Test MinAD</th>
-    <th>IT Validation MinAD</th>
-    <th>US Test MaxAD</th>
-    <th>IT Validation MaxAD</th>
-  </tr>
-  <tr>
-    <td>2010</td>
-    <td>6.75</td>
-    <td>17.89</td>
-    <td>3.89</td>
-    <td>15.72</td>
-    <td>0</td>
-    <td>0.59</td>
-    <td>22.17</td>
-    <td>35.4</td>
-  </tr>
-  <tr>
-    <td>2011</td>
-    <td>6.77</td>
-    <td>17.89</td>
-    <td>5.1</td>
-    <td>15.39</td>
-    <td>0.01</td>
-    <td>2.18</td>
-    <td>25.32</td>
-    <td>52.51</td>
-  </tr>
-  <tr>
-    <td>2012</td>
-    <td>5.91</td>
-    <td>22.6</td>
-    <td>4.96</td>
-    <td>18.62</td>
-    <td>0</td>
-    <td>1.84</td>
-    <td>28.51</td>
-    <td>66.14</td>
-  </tr>
-  <tr>
-    <td>2013</td>
-    <td>6.41</td>
-    <td>16.12</td>
-    <td>5.18</td>
-    <td>12.13</td>
-    <td>0.02</td>
-    <td>0.01</td>
-    <td>23.06</td>
-    <td>54.92</td>
-  </tr>
-  <tr>
-    <td>2014</td>
-    <td>5.28</td>
-    <td>17.11</td>
-    <td>3.43</td>
-    <td>14.07</td>
-    <td>0</td>
-    <td>1.21</td>
-    <td>26.91</td>
-    <td>36.44</td>
-  </tr>
-  <tr>
-    <td>2015</td>
-    <td>6.18</td>
-    <td>22.03</td>
-    <td>5.18</td>
-    <td>18.21</td>
-    <td>0.03</td>
-    <td>0.03</td>
-    <td>22.77</td>
-    <td>49.52</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Avg.</th>
-    <td>6.19</td>
-    <td>18.94</td>
-    <td>4.62</td>
-    <td>15.69</td>
-    <td>0.01</td>
-    <td>0.98</td>
-    <td>24.79</td>
-    <td>49.16</td>
-  </tr>
-</table>
-
-
-<p align="center">Table 5: Performance metrics for the CNN models trained on satellite data from different years. From left to right, the following metrics get presented for Italy (IT) and the default US test set: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Minimum Absolute Difference (MinAD), Maximum Absolute Difference (MaxAD)</p>
+<img align="center" src="https://raw.githubusercontent.com/Borknab/cs4245-project/main/Images/table5.png" />
 
 <p align="justify">
 <p align="center">
