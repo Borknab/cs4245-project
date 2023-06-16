@@ -1,5 +1,5 @@
 <style>
-  td, th {
+  td {
     text-align: center;
   }
 </style>
@@ -205,10 +205,32 @@ In conclusion, each of these ablations resulted in a degraded performance, indic
 Initially, the GRU model was tested with the same hyperparameter which were used in the original paper to train the LSTM model. This led to slightly worse results than in the original paper. Based on the original parameters, *Optuna* was used to perform Bayesian hyperparamter optimization as in the transformer model. The following table shows the original and tuned hyperparameters.
 </p>
 
-|  Configuration  |  Hidden Size  | Dropout | Batch Size | Learning Rate | Weight Decay |
-|-----------------|---------------|---------|------------|---------------|--------------|
-|  Original  | 128 |  0.75  |  32  |  0.001  |  0  |
-|  Tuned  | 1248 |  0.10  |  128  |  0.0005  |  0.10  |
+<table align="center" style="display: revert-layer;">
+  <tr>
+    <th>Configuration</th>
+    <th>Hidden Size</th>
+    <th>Dropout</th>
+    <th>Batch Size</th>
+    <th>Learning Rate</th>
+    <th>Weight Decay</th>
+  </tr>
+  <tr>
+    <td>Original</td>
+    <td>128</td>
+    <td>0.75</td>
+    <td>32</td>
+    <td>0.001</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Tuned</td>
+    <td>1248</td>
+    <td>0.10</td>
+    <td>128</td>
+    <td>0.0005</td>
+    <td>0.10</td>
+  </tr>
+</table>
 
 <p align="justify">
 The main differnce between the two configuration is the size of the hidden layers in the dense output module. This suggests when forgoing the cell state, the complexity of the dense network must be increased.
@@ -219,17 +241,118 @@ The main differnce between the two configuration is the size of the hidden layer
 To compare the performance of the models we have plotted the RMSE of the models for each year. As in the paper, the results are averaged over two runs to account for the random initialization and dropout during training. Models are always trained on all previous years. The results demonstrate that Gaussian Processes improve the performance of the models, and decreases the variance of the results.
 </p>
 
-|  Year  | LSTM | LSTM + GP | 3d CNN | 3d CNN + GP | GRU | GRU + GP | Transformer | Transformer + GP |
-|--------|------|-----------|--------|-------------|-----|----------|-------------|------------------|
-|  2009  | 5.18 |    6.37   |  6.07  |     5.56    |5.75 |   6.67   |     4.93    |       4.78       |
-|  2010  | 7.27 |    7.30   |  6.75  |     7.03    |7.45 |   6.10   |     6.71    |       6.45       |
-|  2011  | 6.82 |    6.72   |  6.77  |     6.40    |6.26 |   5.83   |     5.66    |       5.56       |
-|  2012  | 7.01 |    6.46   |  5.91  |     5.72    |5.72 |   5.46   |     6.68    |       6.14       |
-|  2013  | 5.91 |    5.83   |  6.41  |     6.00    |6.51 |   5.98   |     6.65    |       5.89       |
-|  2014  | 5.99 |    4.65   |  5.28  |     4.87    |5.86 |   5.84   |     6.77    |       5.78       |
-|  2015  | 6.14 |    5.13   |  6.18  |     5.36    |6.59 |   5.72   |     6.76    |       5.83       |
-|        |      |           |        |             |     |          |             |                  |
-|**Avg** | 6.33 |    6.06   |  6.19  |     5.84    |6.30 |   5.94   |     6.30    |     **5.77**     |
+<table align="center" style="display: revert-layer;">
+  <tr>
+    <th>Year</th>
+    <th>LSTM</th>
+    <th>LSTM + GP</th>
+    <th>3d CNN</th>
+    <th>3d CNN + GP</th>
+    <th>GRU</th>
+    <th>GRU + GP</th>
+    <th>Transformer</th>
+    <th>Transformer + GP</th>
+  </tr>
+  <tr>
+    <td>2009</td>
+    <td>5.18</td>
+    <td>6.37</td>
+    <td>6.07</td>
+    <td>5.56</td>
+    <td>5.75</td>
+    <td>6.67</td>
+    <td>4.93</td>
+    <td>4.78</td>
+  </tr>
+  <tr>
+    <td>2010</td>
+    <td>7.27</td>
+    <td>7.30</td>
+    <td>6.75</td>
+    <td>7.03</td>
+    <td>7.45</td>
+    <td>6.10</td>
+    <td>6.71</td>
+    <td>6.45</td>
+  </tr>
+  <tr>
+    <td>2011</td>
+    <td>6.82</td>
+    <td>6.72</td>
+    <td>6.77</td>
+    <td>6.40</td>
+    <td>6.26</td>
+    <td>5.83</td>
+    <td>5.66</td>
+    <td>5.56</td>
+  </tr>
+  <tr>
+    <td>2012</td>
+    <td>7.01</td>
+    <td>6.46</td>
+    <td>5.91</td>
+    <td>5.72</td>
+    <td>5.72</td>
+    <td>5.46</td>
+    <td>6.68</td>
+    <td>6.14</td>
+  </tr>
+  <tr>
+    <td>2013</td>
+    <td>5.91</td>
+    <td>5.83</td>
+    <td>6.41</td>
+    <td>6.00</td>
+    <td>6.51</td>
+    <td>5.98</td>
+    <td>6.65</td>
+    <td>5.89</td>
+  </tr>
+  <tr>
+    <td>2014</td>
+    <td>5.99</td>
+    <td>4.65</td>
+    <td>5.28</td>
+    <td>4.87</td>
+    <td>5.86</td>
+    <td>5.84</td>
+    <td>6.77</td>
+    <td>5.78</td>
+  </tr>
+  <tr>
+    <td>2015</td>
+    <td>6.14</td>
+    <td>5.13</td>
+    <td>6.18</td>
+    <td>5.36</td>
+    <td>6.59</td>
+    <td>5.72</td>
+    <td>6.76</td>
+    <td>5.83</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th>Avg</th>
+    <td>6.33</td>
+    <td>6.06</td>
+    <td>6.19</td>
+    <td>5.84</td>
+    <td>6.30</td>
+    <td>5.94</td>
+    <td>6.30</td>
+    <th><strong>5.77</strong></th>
+  </tr>
+</table>
 
 <p align="center">Table 3: RMSE for the different architectures, with and without Gaussian Processses</p>
 
